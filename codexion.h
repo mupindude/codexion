@@ -13,7 +13,7 @@ typedef struct s_args
 	int	scheduler;
 }	t_args;
 
-
+/*
 typedef struct s_data
 {
 	t_coder	*coders;
@@ -33,6 +33,7 @@ typedef struct s_dongle
 	int	id;
 	int	cool_down;
 } t_dongle;
+ */
 
 #include <unistd.h>
 #include <stdio.h>
