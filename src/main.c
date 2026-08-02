@@ -1,9 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/08/02 15:13:39 by dmupindu          #+#    #+#             */
+/*   Updated: 2026/08/02 15:13:44 by dmupindu         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../codexion.h"
 
 int	is_numeric(char **argv)
 {
 	int	i;
-	int j;
+	int	j;
 
 	i = 1;
 	while (argv[i])
@@ -22,18 +34,18 @@ int	is_numeric(char **argv)
 	return (0);
 }
 
-int validate_args(char **argv, t_args *argz)
+int	validate_args(char **argv, t_args *argz)
 {
 	printf("Validating");
 	argz->nb_coders = atoi(argv[1]);
 	if (argz->nb_coders <= 0)
-		return(1);
+		return (1);
 	argz->time_to_burnout = atoi(argv[2]);
 	if (argz->time_to_burnout <= 0)
 		return (1);
 	argz->time_to_compile = atoi(argv[3]);
 	if (argz->time_to_compile <= 0)
-		return(1);
+		return (1);
 	argz->time_to_debug = atoi(argv[4]);
 	if (argz->time_to_debug <= 0)
 		return (1);
