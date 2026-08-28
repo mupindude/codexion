@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:14:25 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/08/02 15:21:46 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/08/28 13:31:36 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 
 int	init_data(t_data *data, t_args *args)
 {
-	int	i;
-
 	data->args = *args;
 	data->stop = 0;
 	data->start_time = 0;

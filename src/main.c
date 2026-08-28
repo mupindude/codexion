@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:13:39 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/08/28 08:37:24 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/08/28 13:35:07 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	is_numeric(char **argv)
 		if (argv[i][0] == '\0')
 			return (1);
 		j = 0;
-		while (argv[i][j])
+		while (argv[i][j] && j < 8)
 		{
 			if (argv[i][j] < '0' || argv[i][j] > '9')
 				return (1);

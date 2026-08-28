@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:14:13 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/08/28 08:36:20 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/08/28 13:45:28 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,17 @@
 # include <time.h>
 # include <unistd.h>
 
-typedef struct s_data	t_data;
-typedef struct s_coder	t_coder;
-typedef struct s_dongle	t_dongle;
+typedef struct	s_data	t_data;
+typedef struct	s_coder	t_coder;
+typedef struct	s_dongle	t_dongle;
+typedef struct	s_request t_request;
+typedef	struct	s_heap	t_heap;
+
+typedef enum e_scheduler
+{
+	FIFO,
+	EDF
+} t_scheduler;
 
 typedef struct s_args
 {
@@ -35,12 +43,6 @@ typedef struct s_args
 	int					dongle_cooldown;
 	t_scheduler			scheduler;
 }						t_args;
-
-typedef enum e_scheduler
-{
-	FIFO,
-	EDF
-} t_scheduler;
 
 typedef struct s_data
 {
@@ -76,7 +78,7 @@ typedef struct s_dongle
 	int					id;
 	int					in_use;
 	long				available_at;
-	t_heap				waiters;
+	t_heap				*waiters;
 	pthread_mutex_t		mutex;
 	pthread_cond_t		cond;
 }						t_dongle;
@@ -96,16 +98,13 @@ typedef	struct s_heap
 	int			(*compare) (t_request *a, t_request *b);
 }	t_heap;
 
-
-
 int						is_numeric(char **argv);
 int						validate_args(char **argv, t_args *argz);
 void					print_args(t_args args);
 
 int						init_data(t_data *data, t_args *args);
-/*
+
 void					init_dongles(t_data data);
 void					init_coders(t_data *data);
-*/
 
 #endif
