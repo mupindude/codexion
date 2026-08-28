@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:13:39 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/08/02 15:13:44 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/08/28 08:37:24 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ int	is_numeric(char **argv)
 
 int	validate_args(char **argv, t_args *argz)
 {
-	printf("Validating");
 	argz->nb_coders = atoi(argv[1]);
 	if (argz->nb_coders <= 0)
 		return (1);
@@ -58,9 +57,12 @@ int	validate_args(char **argv, t_args *argz)
 	argz->dongle_cooldown = atoi(argv[7]);
 	if (argz->dongle_cooldown <= 0)
 		return (1);
-	argz->scheduler = atoi(argv[8]);
-	if (argz->scheduler <= 0)
-		return (1);
+	if (strcmp(argv[8], "fifo") == 0)
+		argz->scheduler = FIFO;
+	else if (strcmp(argv[8], "edf") == 0)
+		argz->scheduler = EDF;
+	else
+		return(1);
 	return (0);
 }
 

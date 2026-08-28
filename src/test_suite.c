@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:23:19 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/08/02 15:23:34 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/08/28 08:51:57 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,5 +21,5 @@ void	print_args(t_args args)
 	printf("time_to_refactor : %d\n", args.time_to_refactor);
 	printf("nb_compiles      : %d\n", args.nb_compiles);
 	printf("dongle_cooldown  : %d\n", args.dongle_cooldown);
-	printf("scheduler        : %d\n", args.scheduler);
+	printf("scheduler        : %s\n", args.scheduler);
 }
