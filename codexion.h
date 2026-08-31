@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:14:13 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/08/28 13:45:28 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/08/31 08:18:53 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,15 @@ void					print_args(t_args args);
 
 int						init_data(t_data *data, t_args *args);
 
-void					init_dongles(t_data data);
+void					init_dongles(t_data *data);
 void					init_coders(t_data *data);
+int			heap_init(t_heap *heap, int capacity,
+				int (*compare)(t_request *, t_request *));
+int			heap_push(t_heap *heap, t_request *request);
+t_request	*heap_peek(t_heap *heap);
+t_request	*heap_pop(t_heap *heap);
+
+int			compare_fifo(t_request *a, t_request *b);
+int			compare_edf(t_request *a, t_request *b);
 
 #endif
