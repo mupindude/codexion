@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:13:39 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/08/28 13:35:07 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/09/01 08:39:36 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,12 @@ int	is_numeric(char **argv)
 	int	j;
 
 	i = 1;
-	while (argv[i])
+	while (argv[i] && i < 8)
 	{
 		if (argv[i][0] == '\0')
 			return (1);
 		j = 0;
-		while (argv[i][j] && j < 8)
+		while (argv[i][j])
 		{
 			if (argv[i][j] < '0' || argv[i][j] > '9')
 				return (1);
@@ -69,6 +69,7 @@ int	validate_args(char **argv, t_args *argz)
 int	main(int argc, char **argv)
 {
 	t_args argz;
+	t_data data;
 
 	if (argc != 9)
 	{
@@ -88,7 +89,13 @@ int	main(int argc, char **argv)
 		return (1);
 	}
 
-	printf("The arguments are as follows:");
-	print_args(argz);
+	if (init_data(&data, &argz))
+		return (1);
+
+	//printf("The arguments are as follows:");
+	//print_args(argz);
+	print_args(data.args);
+	write(1, "/n", 1);
+	print_coders(&data);
 	return (0);
 }

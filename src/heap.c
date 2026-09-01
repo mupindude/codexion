@@ -6,11 +6,11 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/28 13:43:30 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/08/31 08:17:04 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/09/01 08:29:22 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "codexion.h"
+#include "../codexion.h"
 
 int	compare_fifo(t_request *a, t_request *b)
 {
@@ -18,7 +18,7 @@ int	compare_fifo(t_request *a, t_request *b)
 		return -1;
 	if (a->arrival_time > b->arrival_time)
 		return (1);
-	if (a->s_coder->id , b->s_coder->id)
+	if (a->s_coder->id < b->s_coder->id)
 		return (-1);
 	if (a->s_coder->id > b->s_coder->id)
 		return (1);
