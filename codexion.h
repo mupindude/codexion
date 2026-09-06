@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:14:13 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/01 08:32:04 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/09/06 15:05:56 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ typedef struct s_dongle
 
 typedef struct  s_request
 {
-	t_coder	*s_coder;
+	t_coder	*coder;
 	long	arrival_time;
 	long	deadline;
 }	t_request;
@@ -114,6 +114,9 @@ t_request	*heap_pop(t_heap *heap);
 
 int			compare_fifo(t_request *a, t_request *b);
 int			compare_edf(t_request *a, t_request *b);
+
+void		destroy_heap(t_heap *heap);
+ void	destroy_data(t_data *data);
 
 void	print_coders(t_data *data);
 

@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:14:25 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/01 08:37:31 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/09/06 15:05:17 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,22 +90,12 @@ int init_coders(t_data *data)
 	return (0);
 }
 
-void	print_coders(t_data *data) //function to test the initialization
-{
-	int	i;
-
-	i = 0;
-	while (i < data->args.nb_coders)
-	{
-		printf("Coder %d\n", data->coders[i].id);
-		printf("  left  dongle: %d\n",
-			data->coders[i].left_dongle->id);
-		printf("  right dongle: %d\n",
-			data->coders[i].right_dongle->id);
-		printf("  compile count: %d\n",
-			data->coders[i].compile_count);
-		printf("  last compile: %ld\n",
-			data->coders[i].last_compile);
-		i++;
-	}
-}
+ void	destroy_data(t_data *data)
+ {
+	if (data == NULL)
+		return ;
+	free (data->coders);
+	data->coders = NULL;
+	free (data->dongles);
+	data->dongles = NULL;
+ }

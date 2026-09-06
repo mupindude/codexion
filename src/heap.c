@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/28 13:43:30 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/01 08:29:22 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/09/06 14:48:58 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@ int	compare_fifo(t_request *a, t_request *b)
 		return -1;
 	if (a->arrival_time > b->arrival_time)
 		return (1);
-	if (a->s_coder->id < b->s_coder->id)
+	if (a->coder->id < b->coder->id)
 		return (-1);
-	if (a->s_coder->id > b->s_coder->id)
+	if (a->coder->id > b->coder->id)
 		return (1);
 	return (0);
 }
@@ -31,9 +31,9 @@ int	compare_edf(t_request *a, t_request *b)
 		return (-1);
 	if (a->deadline > b->deadline)
 		return (1);
-	if (a->s_coder->id < b->s_coder->id)
+	if (a->coder->id < b->coder->id)
 		return (-1);
-	if (a->s_coder->id > b->s_coder->id)
+	if (a->coder->id > b->coder->id)
 		return (1);
 	return (0);
 }
@@ -135,4 +135,15 @@ t_request	*heap_pop(t_heap *heap)
 		index = smallest;
 	}
 	return (result);
+}
+
+void	destroy_heap(t_heap *heap)
+{
+	if ( heap == NULL)
+		return ;
+	free(heap->entries);
+	heap->entries = NULL;
+	heap->size = 0;
+	heap->capacity = 0;
+	heap->compare = NULL;
 }
