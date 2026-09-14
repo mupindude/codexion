@@ -6,6 +6,7 @@ CFLAGS		= -Wall -Wextra -Werror -pthread
 SRCS		=	src/main.c \
 				src/init_data.c \
 				src/heap.c \
+				src/coder.c \
 				src/test_suite.c
 
 OBJ_DIR = obj

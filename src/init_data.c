@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:14:25 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/06 15:05:17 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/09/13 15:55:33 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,8 +92,18 @@ int init_coders(t_data *data)
 
  void	destroy_data(t_data *data)
  {
+	int	i;
 	if (data == NULL)
 		return ;
+	i = 0;
+	while (i < data->args.nb_coders)
+	{
+		pthread_mutex_destroy(&data->dongles[i].mutex);
+		pthread_cond_destroy(&data->dongles[i].cond);
+		i++;
+	}
+	pthread_mutex_destroy(&data->print_mutex);
+	pthread_mutex_destroy(&data->stop_mutex);
 	free (data->coders);
 	data->coders = NULL;
 	free (data->dongles);

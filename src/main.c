@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:13:39 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/06 15:06:13 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/09/14 07:58:04 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ int	main(int argc, char **argv)
 	t_args argz;
 	t_data data;
 	t_heap heap_data;
+	int		i;
 
 	if (argc != 9)
 	{
@@ -90,14 +91,29 @@ int	main(int argc, char **argv)
 		return (1);
 	}
 
+	if (heap_init(&heap_data, 4, compare_fifo)) // initializied heap just to test destroy
+	return (1);
+
 	if (init_data(&data, &argz))
 		return (1);
-
-
-	//printf("The arguments are as follows:");
-	//print_args(argz);
 	print_args(data.args);
 	print_coders(&data);
+
+	i = 0;
+	while ( (i < data.args.nb_coders))
+	{
+		if (pthread_create(&data.coders[i].thread, NULL, coder_routine, &data.coders[i]) != 0)
+			return (1);
+		i++;
+	}
+
+	i = 0;
+	while (i < data.args.nb_coders)
+	{
+		pthread_join(data.coders[i].thread, NULL);
+		i++;
+	}
+
 	destroy_heap(&heap_data);
 	destroy_data(&data);
 	return (0);

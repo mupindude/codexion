@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:14:13 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/06 15:05:56 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/09/14 07:52:13 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,9 +103,11 @@ int						validate_args(char **argv, t_args *argz);
 void					print_args(t_args args);
 
 int						init_data(t_data *data, t_args *args);
-
 int					init_dongles(t_data *data);
 int					init_coders(t_data *data);
+void	print_coders(t_data *data);
+void	*coder_routine(void *arg);
+
 int			heap_init(t_heap *heap, int capacity,
 				int (*compare)(t_request *, t_request *));
 int			heap_push(t_heap *heap, t_request *request);
@@ -116,8 +118,6 @@ int			compare_fifo(t_request *a, t_request *b);
 int			compare_edf(t_request *a, t_request *b);
 
 void		destroy_heap(t_heap *heap);
- void	destroy_data(t_data *data);
-
-void	print_coders(t_data *data);
+void	destroy_data(t_data *data);
 
 #endif
