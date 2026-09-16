@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:14:25 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/13 15:55:33 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/09/16 08:32:49 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ int	init_data(t_data *data, t_args *args)
 	data->args = *args;
 	data->stop = 0;
 	data->start_time = 0;
+	data->waiters = NULL;
 	data->coders = malloc(sizeof(t_coder) * data->args.nb_coders);
 	if (!data->coders)
 		return (1);
@@ -26,6 +27,7 @@ int	init_data(t_data *data, t_args *args)
 		free(data->coders);
 		return (1);
 	}
+
 	if (pthread_mutex_init(&data->print_mutex, NULL) != 0)
 	{
 		free(data->coders);
@@ -40,6 +42,24 @@ int	init_data(t_data *data, t_args *args)
 		free(data->dongles);
 		return (1);
 	}
+
+	data->waiters = malloc(sizeof(t_heap));
+	if (!data->waiters)
+		return (1);
+
+	if (data->args.scheduler == FIFO)
+	{
+		if (heap_init(data->waiters, data->args.nb_coders,
+				compare_fifo))
+			return (1);
+	}
+	else
+	{
+		if (heap_init(data->waiters, data->args.nb_coders,
+				compare_edf))
+			return (1);
+	}
+
 	if (init_dongles(data))
 		return (1);
 	if (init_coders(data))
@@ -57,7 +77,6 @@ int	init_dongles(t_data *data)
 		data->dongles[i].id = i;
 		data->dongles[i].in_use = 0;
 		data->dongles[i].available_at = 0;
-		data->dongles[i].waiters = NULL;
 		if (pthread_mutex_init(&data->dongles[i].mutex, NULL) != 0)
 			return (1);
 		if (pthread_cond_init(&data->dongles[i].cond, NULL) != 0)
