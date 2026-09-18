@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:14:13 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/18 07:51:22 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/09/18 13:42:11 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,5 +128,6 @@ void	destroy_data(t_data *data);
 t_request	*create_request(t_coder *coder, long now, int time_to_burnout);
 int	submit_request(t_data *data, t_coder *coder, long now);
 t_request	*get_next_request(t_data *data);
+void	*scheduler_routine(void *arg);
 
 #endif

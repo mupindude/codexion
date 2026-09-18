@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/16 08:03:33 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/18 07:41:57 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/09/18 13:45:43 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,15 @@ int	submit_request(t_data *data, t_coder *coder, long now)
 			data->args.time_to_burnout);
 	if (!request)
 		return (1);
+	pthread_mutex_lock(&data->scheduler_mutex);
 	if (heap_push(data->waiters, request))
 	{
+		pthread_mutex_unlock(&data->scheduler_mutex);
 		free(request);
 		return (1);
 	}
+	pthread_cond_signal(&data->scheduler_cond);
+	pthread_mutex_unlock(&data->scheduler_mutex);
 	return (0);
 }
 
