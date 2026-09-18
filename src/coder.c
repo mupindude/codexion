@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 07:34:18 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/15 08:33:55 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/09/18 08:17:46 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	*coder_routine(void *arg)
 	return(NULL);
 }
 
-static	void take_dongle(t_dongle  *dongle)
+/*static	void take_dongle(t_dongle  *dongle)
 {
 	pthread_mutex_lock(&dongle->mutex);
 
@@ -67,4 +67,4 @@ static void release_dongles(t_coder *coder)
 {
 	release_dongle(coder->left_dongle);
 	release_dongle(coder->right_dongle);
-}
+} */

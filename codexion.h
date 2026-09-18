@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:14:13 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/16 08:26:36 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/09/18 07:51:22 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,11 +49,13 @@ typedef struct s_data
 	t_args				args;
 	t_coder				*coders;
 	t_dongle			*dongles;
-
 	t_heap				*waiters;
 
-	pthread_t			monitor;
+	t_request			*current_request;
+	pthread_mutex_t		scheduler_mutex;
+	pthread_cond_t		scheduler_cond;
 
+	pthread_t			monitor;
 	long				start_time;
 	int					stop;
 
@@ -125,5 +127,6 @@ void	destroy_data(t_data *data);
 
 t_request	*create_request(t_coder *coder, long now, int time_to_burnout);
 int	submit_request(t_data *data, t_coder *coder, long now);
+t_request	*get_next_request(t_data *data);
 
 #endif

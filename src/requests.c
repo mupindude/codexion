@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/16 08:03:33 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/16 08:26:23 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/09/18 07:41:57 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,4 +39,9 @@ int	submit_request(t_data *data, t_coder *coder, long now)
 		return (1);
 	}
 	return (0);
+}
+
+t_request	*get_next_request(t_data *data)
+{
+	return (heap_pop(data->waiters));
 }

@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:14:25 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/16 08:32:49 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/09/18 08:21:30 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ int	init_data(t_data *data, t_args *args)
 	data->stop = 0;
 	data->start_time = 0;
 	data->waiters = NULL;
+	data->current_request = NULL;
 	data->coders = malloc(sizeof(t_coder) * data->args.nb_coders);
 	if (!data->coders)
 		return (1);
@@ -41,6 +42,25 @@ int	init_data(t_data *data, t_args *args)
 		free(data->coders);
 		free(data->dongles);
 		return (1);
+	}
+
+	if (pthread_mutex_init(&data->scheduler_mutex, NULL) != 0)
+	{
+		pthread_mutex_destroy(&data->stop_mutex);
+		pthread_mutex_destroy(&data->print_mutex);
+		free(data->coders);
+		free(data->dongles);
+		return(1);
+	}
+
+	if (pthread_cond_init(&data->scheduler_cond, NULL) != 0)
+	{
+		pthread_mutex_destroy(&data->scheduler_mutex);
+		pthread_mutex_destroy(&data->stop_mutex);
+		pthread_mutex_destroy(&data->print_mutex);
+		free(data->coders);
+		free(data->dongles);
+		return(1);
 	}
 
 	data->waiters = malloc(sizeof(t_heap));
@@ -123,6 +143,16 @@ int init_coders(t_data *data)
 	}
 	pthread_mutex_destroy(&data->print_mutex);
 	pthread_mutex_destroy(&data->stop_mutex);
+	pthread_mutex_destroy(&data->scheduler_mutex);
+	pthread_cond_destroy(&data->scheduler_cond);
+
+	if (data->waiters)
+	{
+		destroy_heap(data->waiters);
+		free(data->waiters);
+		data->waiters = NULL;
+	}
+
 	free (data->coders);
 	data->coders = NULL;
 	free (data->dongles);
