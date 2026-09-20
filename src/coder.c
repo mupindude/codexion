@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 07:34:18 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/18 08:17:46 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/09/20 14:25:15 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,16 @@
 void	*coder_routine(void *arg)
 {
 	t_coder	*coder;
-	int		i;
+
+	// temporary test to verify if scheduler connection is estabilished
+	long	now;
+
+	coder = (t_coder *)arg;
+	now = 0;
+	if (submit_request(coder->data, coder, now) != 0)
+		return (NULL);
+	return (NULL);
+	/*int		i;
 
 	coder = (t_coder *)arg;
 	i = 0;
@@ -34,6 +43,7 @@ void	*coder_routine(void *arg)
 		i++;
 	}
 	return(NULL);
+	*/
 }
 
 /*static	void take_dongle(t_dongle  *dongle)

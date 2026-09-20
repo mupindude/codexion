@@ -7,6 +7,8 @@ SRCS		=	src/main.c \
 				src/init_data.c \
 				src/heap.c \
 				src/coder.c \
+				src/scheduler.c \
+				src/requests.c \
 				src/test_suite.c
 
 OBJ_DIR = obj
