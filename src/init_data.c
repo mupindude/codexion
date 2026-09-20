@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:14:25 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/18 08:21:30 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/09/20 17:26:23 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,6 +124,7 @@ int init_coders(t_data *data)
 		data->coders[i].left_dongle = &data->dongles[i];
 		data->coders[i].right_dongle = &data->dongles[(i + 1) % nb_coders];
 		data->coders[i].data = data;
+		data->coders[i].scheduled = 0;
 		i++;
 	}
 	return (0);

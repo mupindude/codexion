@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:14:13 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/20 14:22:11 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/09/20 17:25:09 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ typedef struct s_data
 	pthread_cond_t		scheduler_cond;
 	pthread_t			scheduler;
 	pthread_t			monitor;
-	
+
 	long				start_time;
 	int					stop;
 
@@ -72,6 +72,8 @@ typedef struct s_coder
 
 	int					compile_count;
 	long				last_compile;
+
+	int					scheduled;
 
 	t_dongle			*left_dongle;
 	t_dongle			*right_dongle;

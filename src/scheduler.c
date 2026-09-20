@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/18 13:39:03 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/20 14:13:55 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/09/20 17:31:11 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,16 +21,18 @@ void	*scheduler_routine(void *arg)
 	while (1)
 	{
 		pthread_mutex_lock(&data->scheduler_mutex);
-		while ( data->waiters->size == 0 && data->stop == 0)
+		while (data->waiters->size == 0 && data->stop == 0)
 			pthread_cond_wait(&data->scheduler_cond,
 				&data->scheduler_mutex);
 		if (data->stop && data->waiters->size == 0)
 		{
 			pthread_mutex_unlock(&data->scheduler_mutex);
-			break;
+			break ;
 		}
-
 		request = heap_pop(data->waiters);
+		if (request != NULL)
+			request->s_coder->scheduled = 1;
+		pthread_cond_broadcast(&data->scheduler_cond);
 		pthread_mutex_unlock(&data->scheduler_mutex);
 		if (request != NULL)
 		{
