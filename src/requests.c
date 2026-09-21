@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/16 08:03:33 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/18 13:45:43 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/09/21 07:27:16 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ t_request	*create_request(t_coder *coder, long now, int time_to_burnout)
 	request->s_coder = coder;
 	request->arrival_time = now;
 	request->deadline = now + time_to_burnout;
+	request->granted = 0;
 	return (request);
 }
 
@@ -34,8 +35,10 @@ int	submit_request(t_data *data, t_coder *coder, long now)
 	if (!request)
 		return (1);
 	pthread_mutex_lock(&data->scheduler_mutex);
+	coder->request = request;
 	if (heap_push(data->waiters, request))
 	{
+		coder->request = NULL;
 		pthread_mutex_unlock(&data->scheduler_mutex);
 		free(request);
 		return (1);

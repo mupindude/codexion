@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/18 13:39:03 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/20 17:31:11 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/09/21 08:26:21 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,10 @@ void	*scheduler_routine(void *arg)
 		}
 		request = heap_pop(data->waiters);
 		if (request != NULL)
-			request->s_coder->scheduled = 1;
-		pthread_cond_broadcast(&data->scheduler_cond);
+		{
+			request->granted = 1;
+			pthread_cond_broadcast(&data->scheduler_cond);
+		}
 		pthread_mutex_unlock(&data->scheduler_mutex);
 		if (request != NULL)
 		{
@@ -40,8 +42,46 @@ void	*scheduler_routine(void *arg)
 			printf("Scheduler selected Coder %d\n",
 				request->s_coder->id);
 			pthread_mutex_unlock(&data->print_mutex);
-			free(request);
+			//free(request);
 		}
 	}
 	return (NULL);
+}
+
+/*
+static int dongle_is_available(t_dongle *dongle, long now)
+{
+	int	available;
+
+	pthread_mutex_lock(&dongle->mutex);
+	available = (dongle->in_use == 0 && dongle->available_at <= now);
+	pthread_mutex_unlock(&dongle->mutex);
+	return (available);
+}
+	*/
+
+int try_reserve_dongles(t_request *request, long now)
+{
+	t_coder		*coder;
+	t_dongle	*left;
+	t_dongle	*right;
+
+	coder = request->s_coder;
+	left = coder->left_dongle;
+	right = coder->right_dongle;
+
+	if (left == right)
+	{
+		if (left->in_use != 0 || left->available_at > now)
+			return (0);
+		left->in_use = 1;
+		return (1);
+	}
+	if (left->in_use != 0 || left->available_at > now)
+		return (0);
+	if (right->in_use != 0 || right->available_at > now)
+		return (0);
+	left->in_use = 1;
+	right->in_use = 1;
+	return (1);
 }

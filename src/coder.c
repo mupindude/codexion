@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 07:34:18 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/20 17:33:21 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/09/21 07:37:53 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,11 @@ void	*coder_routine(void *arg)
 	data = coder->data;
 	now = 0;
 
-	pthread_mutex_lock(&data->scheduler_mutex);
-	coder->scheduled = 0;
-	pthread_mutex_unlock(&data->scheduler_mutex);
-
 	if (submit_request(data, coder, now) != 0)
 		return (NULL);
 
 	pthread_mutex_lock(&data->scheduler_mutex);
-	while (coder->scheduled == 0 && data->stop == 0)
+	while (coder->request->granted == 0 && data->stop == 0)
 		pthread_cond_wait(&data->scheduler_cond,
 			&data->scheduler_mutex);
 	pthread_mutex_unlock(&data->scheduler_mutex);

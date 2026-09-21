@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:14:25 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/20 17:26:23 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/09/21 08:18:11 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ int	init_data(t_data *data, t_args *args)
 {
 	data->args = *args;
 	data->stop = 0;
-	data->start_time = 0;
+	data->start_time = get_time_ms();
 	data->waiters = NULL;
 	data->current_request = NULL;
 	data->coders = malloc(sizeof(t_coder) * data->args.nb_coders);
@@ -124,7 +124,7 @@ int init_coders(t_data *data)
 		data->coders[i].left_dongle = &data->dongles[i];
 		data->coders[i].right_dongle = &data->dongles[(i + 1) % nb_coders];
 		data->coders[i].data = data;
-		data->coders[i].scheduled = 0;
+		data->coders[i].request = NULL;
 		i++;
 	}
 	return (0);

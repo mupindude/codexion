@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:14:13 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/20 17:25:09 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/09/21 08:28:41 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <stdlib.h>
 # include <string.h>
 # include <time.h>
+# include <sys/time.h>
 # include <unistd.h>
 
 typedef struct	s_data	t_data;
@@ -73,7 +74,7 @@ typedef struct s_coder
 	int					compile_count;
 	long				last_compile;
 
-	int					scheduled;
+	t_request			*request;
 
 	t_dongle			*left_dongle;
 	t_dongle			*right_dongle;
@@ -96,6 +97,7 @@ typedef struct  s_request
 	t_coder	*s_coder;
 	long	arrival_time;
 	long	deadline;
+	int		granted;
 }	t_request;
 
 typedef	struct s_heap
@@ -132,5 +134,9 @@ t_request	*create_request(t_coder *coder, long now, int time_to_burnout);
 int	submit_request(t_data *data, t_coder *coder, long now);
 t_request	*get_next_request(t_data *data);
 void	*scheduler_routine(void *arg);
+
+int	try_reserve_dongles(t_request *request, long now);
+
+long	get_time_ms(void);
 
 #endif
