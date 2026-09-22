@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/18 13:39:03 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/21 08:26:21 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/09/22 08:09:58 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,20 +29,31 @@ void	*scheduler_routine(void *arg)
 			pthread_mutex_unlock(&data->scheduler_mutex);
 			break ;
 		}
-		request = heap_pop(data->waiters);
-		if (request != NULL)
+
+		request = heap_peek(data->waiters);
+		if (request != NULL
+			&& try_reserve_dongles(request, get_time_ms()))
 		{
+			request = heap_pop(data->waiters);
 			request->granted = 1;
 			pthread_cond_broadcast(&data->scheduler_cond);
 		}
+
+		else
+		{
+			pthread_mutex_unlock(&data->scheduler_mutex);
+			usleep(1000);
+			continue ;
+		}
+
 		pthread_mutex_unlock(&data->scheduler_mutex);
+
 		if (request != NULL)
 		{
 			pthread_mutex_lock(&data->print_mutex);
 			printf("Scheduler selected Coder %d\n",
 				request->s_coder->id);
 			pthread_mutex_unlock(&data->print_mutex);
-			//free(request);
 		}
 	}
 	return (NULL);
@@ -84,4 +95,32 @@ int try_reserve_dongles(t_request *request, long now)
 	left->in_use = 1;
 	right->in_use = 1;
 	return (1);
+}
+
+void	release_dongles(t_request *request)
+{
+	t_coder		*coder;
+	t_dongle	*left;
+	t_dongle	*right;
+	long		available_at;
+	t_data		*data;
+
+	coder = request->s_coder;
+	data = coder->data;
+	left = coder->left_dongle;
+	right = coder->right_dongle;
+	available_at = get_time_ms() + data->args.dongle_cooldown;
+
+	pthread_mutex_lock(&data->scheduler_mutex);
+
+	left->in_use = 0;
+	left->available_at = available_at;
+	if (left != right)
+	{
+		right->in_use = 0;
+		right->available_at = available_at;
+	}
+
+	pthread_cond_broadcast(&data->scheduler_cond);
+	pthread_mutex_unlock(&data->scheduler_mutex);
 }

@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:14:13 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/21 08:28:41 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/09/22 07:24:56 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,6 +136,7 @@ t_request	*get_next_request(t_data *data);
 void	*scheduler_routine(void *arg);
 
 int	try_reserve_dongles(t_request *request, long now);
+void	release_dongles(t_request *request);
 
 long	get_time_ms(void);
 

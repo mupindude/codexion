@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 07:34:18 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/21 07:37:53 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/09/22 07:26:17 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ void	*coder_routine(void *arg)
 	pthread_mutex_lock(&data->print_mutex);
 	printf("Coder %d received permission to compile\n", coder->id);
 	pthread_mutex_unlock(&data->print_mutex);
+
+	release_dongles(coder->request);
 
 	return (NULL);
 }
