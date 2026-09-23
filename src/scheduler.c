@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/18 13:39:03 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/22 08:09:58 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/09/23 07:46:39 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,25 +36,21 @@ void	*scheduler_routine(void *arg)
 		{
 			request = heap_pop(data->waiters);
 			request->granted = 1;
+
+			pthread_mutex_lock(&data->print_mutex);
+			printf("Scheduler selected Coder %d\n",
+				request->s_coder->id);
+			pthread_mutex_unlock(&data->print_mutex);
+
 			pthread_cond_broadcast(&data->scheduler_cond);
 		}
-
 		else
 		{
 			pthread_mutex_unlock(&data->scheduler_mutex);
 			usleep(1000);
 			continue ;
 		}
-
 		pthread_mutex_unlock(&data->scheduler_mutex);
-
-		if (request != NULL)
-		{
-			pthread_mutex_lock(&data->print_mutex);
-			printf("Scheduler selected Coder %d\n",
-				request->s_coder->id);
-			pthread_mutex_unlock(&data->print_mutex);
-		}
 	}
 	return (NULL);
 }

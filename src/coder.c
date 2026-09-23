@@ -6,41 +6,78 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 07:34:18 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/22 07:26:17 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/09/23 08:32:53 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../codexion.h"
 
-void	*coder_routine(void *arg)
+static void perform_compile(t_coder *coder);
+static void perform_debug(t_coder *coder);
+
+void *coder_routine(void *arg)
 {
-	t_coder	*coder;
-	t_data		*data;
-	long	now;
+    t_coder *coder;
+    t_data  *data;
+    long    now;
 
-	coder = (t_coder *)arg;
-	data = coder->data;
-	now = 0;
+    coder = (t_coder *)arg;
+    data = coder->data;
+    now = 0;
 
-	if (submit_request(data, coder, now) != 0)
-		return (NULL);
+    if (submit_request(data, coder, now) != 0)
+        return (NULL);
 
-	pthread_mutex_lock(&data->scheduler_mutex);
-	while (coder->request->granted == 0 && data->stop == 0)
-		pthread_cond_wait(&data->scheduler_cond,
-			&data->scheduler_mutex);
-	pthread_mutex_unlock(&data->scheduler_mutex);
+    pthread_mutex_lock(&data->scheduler_mutex);
+    while (coder->request->granted == 0 && data->stop == 0)
+        pthread_cond_wait(&data->scheduler_cond,
+            &data->scheduler_mutex);
+    pthread_mutex_unlock(&data->scheduler_mutex);
 
-	if (data->stop != 0)
-		return (NULL);
+    if (data->stop != 0)
+        return (NULL);
 
-	pthread_mutex_lock(&data->print_mutex);
-	printf("Coder %d received permission to compile\n", coder->id);
-	pthread_mutex_unlock(&data->print_mutex);
+    pthread_mutex_lock(&data->print_mutex);
+    printf("Coder %d received permission to compile\n", coder->id);
+    pthread_mutex_unlock(&data->print_mutex);
 
-	release_dongles(coder->request);
+    perform_compile(coder);
+    release_dongles(coder->request);
+    free(coder->request);
+    coder->request = NULL;
 
-	return (NULL);
+	perform_debug(coder);
+
+    return (NULL);
+}
+
+static void perform_compile(t_coder *coder)
+{
+    t_data  *data;
+
+    data = coder->data;
+    coder->last_compile = get_time_ms();
+
+    pthread_mutex_lock(&data->print_mutex);
+    printf("Coder %d is compiling\n", coder->id);
+    pthread_mutex_unlock(&data->print_mutex);
+
+    usleep(data->args.time_to_compile * 1000);
+
+    coder->compile_count++;
+}
+
+static void perform_debug(t_coder *coder)
+{
+    t_data  *data;
+
+    data = coder->data;
+
+    pthread_mutex_lock(&data->print_mutex);
+    printf("Coder %d is debugging\n", coder->id);
+    pthread_mutex_unlock(&data->print_mutex);
+
+    usleep(data->args.time_to_debug * 1000);
 }
 
 /*static	void take_dongle(t_dongle  *dongle)
