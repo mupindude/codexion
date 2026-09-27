@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/18 13:39:03 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/23 07:46:39 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/09/27 13:33:47 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	*scheduler_routine(void *arg)
 		while (data->waiters->size == 0 && data->stop == 0)
 			pthread_cond_wait(&data->scheduler_cond,
 				&data->scheduler_mutex);
-		if (data->stop && data->waiters->size == 0)
+		if (data->stop)
 		{
 			pthread_mutex_unlock(&data->scheduler_mutex);
 			break ;

@@ -10,6 +10,7 @@ SRCS		=	src/main.c \
 				src/scheduler.c \
 				src/requests.c \
 				src/time_utils.c \
+				src/monitor.c \
 				src/test_suite.c
 
 OBJ_DIR = obj

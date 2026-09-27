@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:13:39 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/21 08:15:04 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/09/27 12:58:38 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,18 @@ int	main(int argc, char **argv)
 		destroy_data(&data);
 		return (1);
 	}
+
+	if (pthread_create(&data.monitor, NULL,
+        monitor_routine, &data) != 0)
+	{
+		pthread_mutex_lock(&data.scheduler_mutex);
+		data.stop = 1;
+		pthread_cond_signal(&data.scheduler_cond);
+		pthread_mutex_unlock(&data.scheduler_mutex);
+		pthread_join(data.scheduler, NULL);
+		destroy_data(&data);
+		return (1);
+	}
 	print_args(data.args);
 	print_coders(&data);
 	i = 0;
@@ -117,6 +129,7 @@ int	main(int argc, char **argv)
 	pthread_cond_signal(&data.scheduler_cond);
 	pthread_mutex_unlock(&data.scheduler_mutex);
 	pthread_join(data.scheduler, NULL);
+	pthread_join(data.monitor, NULL);
 
 	printf("Current time: %ld ms\n", get_time_ms());
 
