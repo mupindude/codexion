@@ -6,11 +6,14 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:14:25 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/21 08:18:11 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/09/28 08:42:30 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../codexion.h"
+
+static void	destroy_dongles(t_data *data, int count);
+static void	destroy_global_sync(t_data *data);
 
 int	init_data(t_data *data, t_args *args)
 {
@@ -19,9 +22,11 @@ int	init_data(t_data *data, t_args *args)
 	data->start_time = get_time_ms();
 	data->waiters = NULL;
 	data->current_request = NULL;
+
 	data->coders = malloc(sizeof(t_coder) * data->args.nb_coders);
 	if (!data->coders)
 		return (1);
+
 	data->dongles = malloc(sizeof(t_dongle) * data->args.nb_coders);
 	if (!data->dongles)
 	{
@@ -50,7 +55,7 @@ int	init_data(t_data *data, t_args *args)
 		pthread_mutex_destroy(&data->print_mutex);
 		free(data->coders);
 		free(data->dongles);
-		return(1);
+		return (1);
 	}
 
 	if (pthread_cond_init(&data->scheduler_cond, NULL) != 0)
@@ -60,36 +65,65 @@ int	init_data(t_data *data, t_args *args)
 		pthread_mutex_destroy(&data->print_mutex);
 		free(data->coders);
 		free(data->dongles);
-		return(1);
+		return (1);
 	}
 
 	data->waiters = malloc(sizeof(t_heap));
 	if (!data->waiters)
+	{
+		destroy_global_sync(data);
+		free(data->coders);
+		free(data->dongles);
 		return (1);
+	}
 
 	if (data->args.scheduler == FIFO)
 	{
 		if (heap_init(data->waiters, data->args.nb_coders,
 				compare_fifo))
+		{
+			free(data->waiters);
+			data->waiters = NULL;
+			destroy_global_sync(data);
+			free(data->coders);
+			free(data->dongles);
 			return (1);
+		}
 	}
 	else
 	{
 		if (heap_init(data->waiters, data->args.nb_coders,
 				compare_edf))
+		{
+			free(data->waiters);
+			data->waiters = NULL;
+			destroy_global_sync(data);
+			free(data->coders);
+			free(data->dongles);
 			return (1);
+		}
 	}
 
 	if (init_dongles(data))
+	{
+		destroy_heap(data->waiters);
+		free(data->waiters);
+		data->waiters = NULL;
+		destroy_global_sync(data);
+		free(data->coders);
+		free(data->dongles);
 		return (1);
+	}
+
 	if (init_coders(data))
 		return (1);
+
 	return (0);
 }
 
 int	init_dongles(t_data *data)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (i < data->args.nb_coders)
@@ -98,10 +132,14 @@ int	init_dongles(t_data *data)
 		data->dongles[i].in_use = 0;
 		data->dongles[i].available_at = 0;
 		if (pthread_mutex_init(&data->dongles[i].mutex, NULL) != 0)
+		{
+			destroy_dongles(data, i);
 			return (1);
+		}
 		if (pthread_cond_init(&data->dongles[i].cond, NULL) != 0)
 		{
 			pthread_mutex_destroy(&data->dongles[i].mutex);
+			destroy_dongles(data, i);
 			return (1);
 		}
 		i++;
@@ -159,3 +197,36 @@ int init_coders(t_data *data)
 	free (data->dongles);
 	data->dongles = NULL;
  }
+
+ /*
+ static void cleanup_init_data(t_data *data, int heap_initialized)
+ {
+	if (heap_initialized)
+		destroy_heap(data->waiters);
+	free(data->waiters);
+	pthread_cond_destroy(&data->scheduler_cond);
+	pthread_mutex_destroy(&data->scheduler_mutex);
+	pthread_mutex_destroy(&data->stop_mutex);
+	pthread_mutex_destroy(&data->print_mutex);
+	free(data->coders);
+	free(data->dongles);
+ }
+	*/
+
+static void	destroy_dongles(t_data *data, int count)
+{
+	while (count > 0)
+	{
+		count--;
+		pthread_cond_destroy(&data->dongles[count].cond);
+		pthread_mutex_destroy(&data->dongles[count].mutex);
+	}
+}
+
+static void	destroy_global_sync(t_data *data)
+{
+	pthread_cond_destroy(&data->scheduler_cond);
+	pthread_mutex_destroy(&data->scheduler_mutex);
+	pthread_mutex_destroy(&data->stop_mutex);
+	pthread_mutex_destroy(&data->print_mutex);
+}

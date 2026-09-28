@@ -3,7 +3,7 @@
 static void	print_request(t_request *request)
 {
 	printf("Coder %d | arrival: %ld | deadline: %ld\n",
-		request->coder->id,
+		request->s_coder->id,
 		request->arrival_time,
 		request->deadline);
 }
@@ -26,21 +26,21 @@ int	main(void)
 	coder3.id = 3;
 	coder4.id = 4;
 
-	req1.coder = &coder1;
-	req1.arrival_time = 40;
-	req1.deadline = 100;
+	req1.s_coder = &coder1;
+	req1.arrival_time = 10;
+	req1.deadline = 500;
 
-	req2.coder = &coder2;
-	req2.arrival_time = 10;
-	req2.deadline = 100;
+	req2.s_coder = &coder2;
+	req2.arrival_time = 20;
+	req2.deadline = 200;
 
-	req3.coder = &coder3;
+	req3.s_coder = &coder3;
 	req3.arrival_time = 30;
-	req3.deadline = 200;
+	req3.deadline = 300;
 
-	req4.coder = &coder4;
-	req4.arrival_time = 20;
-	req4.deadline = 300;
+	req4.s_coder = &coder4;
+	req4.arrival_time = 40;
+	req4.deadline = 100;
 
 	if (heap_init(&heap, 4, compare_edf))
 		return (1);
