@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:13:39 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/27 12:58:38 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/02 07:52:51 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ int	main(int argc, char **argv)
 	t_args	argz;
 	t_data	data;
 	int		i;
+	int		created_coders;
 
 	if (argc != 9)
 	{
@@ -89,6 +90,7 @@ int	main(int argc, char **argv)
 	}
 	if (init_data(&data, &argz))
 		return (1);
+
 	if (pthread_create(&data.scheduler, NULL,
 			scheduler_routine, &data) != 0)
 	{
@@ -97,28 +99,39 @@ int	main(int argc, char **argv)
 	}
 
 	if (pthread_create(&data.monitor, NULL,
-        monitor_routine, &data) != 0)
+			monitor_routine, &data) != 0)
 	{
 		pthread_mutex_lock(&data.scheduler_mutex);
 		data.stop = 1;
-		pthread_cond_signal(&data.scheduler_cond);
+		pthread_cond_broadcast(&data.scheduler_cond);
 		pthread_mutex_unlock(&data.scheduler_mutex);
 		pthread_join(data.scheduler, NULL);
 		destroy_data(&data);
 		return (1);
 	}
+
 	print_args(data.args);
 	print_coders(&data);
+
+	created_coders = 0;
 	i = 0;
 	while (i < data.args.nb_coders)
 	{
 		if (pthread_create(&data.coders[i].thread, NULL,
 				coder_routine, &data.coders[i]) != 0)
-			return (1);
+		{
+			pthread_mutex_lock(&data.scheduler_mutex);
+			data.stop = 1;
+			pthread_cond_broadcast(&data.scheduler_cond);
+			pthread_mutex_unlock(&data.scheduler_mutex);
+			break ;
+		}
+		created_coders++;
 		i++;
 	}
+
 	i = 0;
-	while (i < data.args.nb_coders)
+	while (i < created_coders)
 	{
 		pthread_join(data.coders[i].thread, NULL);
 		i++;
@@ -126,8 +139,9 @@ int	main(int argc, char **argv)
 
 	pthread_mutex_lock(&data.scheduler_mutex);
 	data.stop = 1;
-	pthread_cond_signal(&data.scheduler_cond);
+	pthread_cond_broadcast(&data.scheduler_cond);
 	pthread_mutex_unlock(&data.scheduler_mutex);
+
 	pthread_join(data.scheduler, NULL);
 	pthread_join(data.monitor, NULL);
 
