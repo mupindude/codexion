@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:13:39 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/10/02 07:52:51 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/04 13:14:02 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ int	main(int argc, char **argv)
 	t_data	data;
 	int		i;
 	int		created_coders;
+	int		thread_error;
 
 	if (argc != 9)
 	{
@@ -114,6 +115,7 @@ int	main(int argc, char **argv)
 	print_coders(&data);
 
 	created_coders = 0;
+	thread_error = 0;
 	i = 0;
 	while (i < data.args.nb_coders)
 	{
@@ -124,6 +126,7 @@ int	main(int argc, char **argv)
 			data.stop = 1;
 			pthread_cond_broadcast(&data.scheduler_cond);
 			pthread_mutex_unlock(&data.scheduler_mutex);
+			thread_error = 1;
 			break ;
 		}
 		created_coders++;
@@ -148,5 +151,7 @@ int	main(int argc, char **argv)
 	printf("Current time: %ld ms\n", get_time_ms());
 
 	destroy_data(&data);
+	if (thread_error)
+		return (1);
 	return (0);
 }
