@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:13:39 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/10/04 13:14:02 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/07 08:36:24 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,6 +149,17 @@ int	main(int argc, char **argv)
 	pthread_join(data.monitor, NULL);
 
 	printf("Current time: %ld ms\n", get_time_ms());
+
+	i = 0;
+
+	// testing if programm stops after all coders have reached nb_compiles
+	while (i < data.args.nb_coders)
+	{
+		printf("Coder %d compiled %d times\n",
+			data.coders[i].id,
+			data.coders[i].compile_count);
+		i++;
+	}
 
 	destroy_data(&data);
 	if (thread_error)

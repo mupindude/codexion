@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 07:34:18 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/27 15:31:52 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/07 08:37:01 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static void perform_compile(t_coder *coder);
 static void perform_debug(t_coder *coder);
 static void perform_refactor(t_coder *coder);
 static int is_stopped(t_data *data);
-
+static int	all_coders_finished(t_data *data); //temp check to see if program terminates after nb_compiles is reached
 void *coder_routine(void *arg)
 {
     t_coder    *coder;
@@ -60,10 +60,21 @@ void *coder_routine(void *arg)
         perform_compile(coder);
         release_dongles(request);
 
-        free(request);
+		        free(request);
 
         perform_debug(coder);
         perform_refactor(coder);
+
+
+		// testing if programm stops after all coders have reached nb_compiles
+		if (all_coders_finished(data))
+		{
+			pthread_mutex_lock(&data->scheduler_mutex);
+			data->stop = 1;
+			pthread_cond_broadcast(&data->scheduler_cond);
+			pthread_mutex_unlock(&data->scheduler_mutex);
+		}
+
     }
 
     return (NULL);
@@ -121,6 +132,21 @@ static int is_stopped(t_data *data)
     stop = data->stop;
     pthread_mutex_unlock(&data->scheduler_mutex);
     return (stop);
+}
+
+static int	all_coders_finished(t_data *data)
+{
+	int	i;
+
+	i = 0;
+	while (i < data->args.nb_coders)
+	{
+		if (data->coders[i].compile_count
+			< data->args.nb_compiles)
+			return (0);
+		i++;
+	}
+	return (1);
 }
 
 /*static	void take_dongle(t_dongle  *dongle)
