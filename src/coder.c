@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 07:34:18 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/10/07 08:37:01 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/08 08:45:41 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,36 +148,3 @@ static int	all_coders_finished(t_data *data)
 	}
 	return (1);
 }
-
-/*static	void take_dongle(t_dongle  *dongle)
-{
-	pthread_mutex_lock(&dongle->mutex);
-
-	while (dongle->in_use)
-	{
-		pthread_mutex_unlock(&dongle->mutex);
-		usleep(1000);
-		pthread_mutex_lock(&dongle->mutex);
-	}
-	dongle->in_use = 1;
-	pthread_mutex_unlock(&dongle->mutex);
-}
-
-static	void take_dongles(t_coder *coder)
-{
-	take_dongle(coder->left_dongle);
-	take_dongle(coder->right_dongle);
-}
-
-static void	release_dongle(t_dongle *dongle)
-{
-	pthread_mutex_lock(&dongle->mutex);
-	dongle->in_use = 0;
-	pthread_mutex_unlock(&dongle->mutex);
-}
-
-static void release_dongles(t_coder *coder)
-{
-	release_dongle(coder->left_dongle);
-	release_dongle(coder->right_dongle);
-} */
