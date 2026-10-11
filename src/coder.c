@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 07:34:18 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/10/08 08:45:41 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/11 12:11:24 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,10 +53,6 @@ void *coder_routine(void *arg)
         coder->request = NULL;
         pthread_mutex_unlock(&data->scheduler_mutex);
 
-        pthread_mutex_lock(&data->print_mutex);
-        printf("Coder %d received permission to compile\n", coder->id);
-        pthread_mutex_unlock(&data->print_mutex);
-
         perform_compile(coder);
         release_dongles(request);
 
@@ -89,9 +85,7 @@ static void perform_compile(t_coder *coder)
     coder->last_compile = get_time_ms();
 	pthread_mutex_unlock(&data->scheduler_mutex);
 
-    pthread_mutex_lock(&data->print_mutex);
-    printf("Coder %d is compiling\n", coder->id);
-    pthread_mutex_unlock(&data->print_mutex);
+    log_state(coder, "is compiling");
 
 	usleep(data->args.time_to_compile * 1000);
 
@@ -106,9 +100,7 @@ static void perform_debug(t_coder *coder)
 
     data = coder->data;
 
-    pthread_mutex_lock(&data->print_mutex);
-    printf("Coder %d is debugging\n", coder->id);
-    pthread_mutex_unlock(&data->print_mutex);
+    log_state(coder, "is debugging");
 
     usleep(data->args.time_to_debug * 1000);
 }
@@ -118,9 +110,7 @@ static void perform_refactor(t_coder *coder)
     t_data  *data;
 
     data = coder->data;
-    pthread_mutex_lock(&data->print_mutex);
-    printf("Coder %d is refactoring\n", coder->id);
-    pthread_mutex_unlock(&data->print_mutex);
+    log_state(coder, "is refactoring");
     usleep(data->args.time_to_refactor * 1000);
 }
 
@@ -138,13 +128,18 @@ static int	all_coders_finished(t_data *data)
 {
 	int	i;
 
+	pthread_mutex_lock(&data->scheduler_mutex);
 	i = 0;
 	while (i < data->args.nb_coders)
 	{
 		if (data->coders[i].compile_count
 			< data->args.nb_compiles)
-			return (0);
+			{
+				pthread_mutex_unlock(&data->scheduler_mutex);
+				return (0);
+			}
 		i++;
 	}
+	pthread_mutex_unlock(&data->scheduler_mutex);
 	return (1);
 }

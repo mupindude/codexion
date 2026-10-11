@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:14:25 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/29 07:02:09 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/11 10:23:46 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,12 +136,6 @@ int	init_dongles(t_data *data)
 			destroy_dongles(data, i);
 			return (1);
 		}
-		if (pthread_cond_init(&data->dongles[i].cond, NULL) != 0)
-		{
-			pthread_mutex_destroy(&data->dongles[i].mutex);
-			destroy_dongles(data, i);
-			return (1);
-		}
 		i++;
 	}
 	return (0);
@@ -177,7 +171,6 @@ int init_coders(t_data *data)
 	while (i < data->args.nb_coders)
 	{
 		pthread_mutex_destroy(&data->dongles[i].mutex);
-		pthread_cond_destroy(&data->dongles[i].cond);
 		i++;
 	}
 	pthread_mutex_destroy(&data->print_mutex);
@@ -218,7 +211,6 @@ static void	destroy_dongles(t_data *data, int count)
 	while (count > 0)
 	{
 		count--;
-		pthread_cond_destroy(&data->dongles[count].cond);
 		pthread_mutex_destroy(&data->dongles[count].mutex);
 	}
 }

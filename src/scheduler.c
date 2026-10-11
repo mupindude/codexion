@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/18 13:39:03 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/27 13:33:47 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/11 12:09:46 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,7 @@ void	*scheduler_routine(void *arg)
 			request = heap_pop(data->waiters);
 			request->granted = 1;
 
-			pthread_mutex_lock(&data->print_mutex);
-			printf("Scheduler selected Coder %d\n",
-				request->s_coder->id);
-			pthread_mutex_unlock(&data->print_mutex);
+			log_state(request->s_coder, "has taken dongles");
 
 			pthread_cond_broadcast(&data->scheduler_cond);
 		}
@@ -72,6 +69,9 @@ int try_reserve_dongles(t_request *request, long now)
 	t_coder		*coder;
 	t_dongle	*left;
 	t_dongle	*right;
+	t_dongle	*first;
+	t_dongle	*second;
+	int			available;
 
 	coder = request->s_coder;
 	left = coder->left_dongle;
@@ -79,25 +79,44 @@ int try_reserve_dongles(t_request *request, long now)
 
 	if (left == right)
 	{
-		if (left->in_use != 0 || left->available_at > now)
-			return (0);
-		left->in_use = 1;
-		return (1);
+		pthread_mutex_lock(&left->mutex);
+		available = (left->in_use == 0
+				&& left->available_at <= now);
+		if (available)
+			left->in_use = 1;
+		pthread_mutex_unlock(&left->mutex);
+		return (available);
 	}
-	if (left->in_use != 0 || left->available_at > now)
-		return (0);
-	if (right->in_use != 0 || right->available_at > now)
-		return (0);
-	left->in_use = 1;
-	right->in_use = 1;
-	return (1);
+	first = left;
+	second = right;
+	if (first->id > second->id)
+	{
+		first = right;
+		second = left;
+	}
+	pthread_mutex_lock(&first->mutex);
+	pthread_mutex_lock(&second->mutex);
+	available = (left->in_use == 0
+			&& left->available_at <= now
+			&& right->in_use == 0
+			&& right->available_at <= now);
+	if (available)
+	{
+		left->in_use = 1;
+		right->in_use = 1;
+	}
+	pthread_mutex_unlock(&second->mutex);
+	pthread_mutex_unlock(&first->mutex);
+	return (available);
 }
 
 void	release_dongles(t_request *request)
 {
-	t_coder		*coder;
+t_coder		*coder;
 	t_dongle	*left;
 	t_dongle	*right;
+	t_dongle	*first;
+	t_dongle	*second;
 	long		available_at;
 	t_data		*data;
 
@@ -107,16 +126,32 @@ void	release_dongles(t_request *request)
 	right = coder->right_dongle;
 	available_at = get_time_ms() + data->args.dongle_cooldown;
 
-	pthread_mutex_lock(&data->scheduler_mutex);
-
-	left->in_use = 0;
-	left->available_at = available_at;
-	if (left != right)
+	if (left == right)
 	{
+		pthread_mutex_lock(&left->mutex);
+		left->in_use = 0;
+		left->available_at = available_at;
+		pthread_mutex_unlock(&left->mutex);
+	}
+	else
+	{
+		first = left;
+		second = right;
+		if (first->id > second->id)
+		{
+			first = right;
+			second = left;
+		}
+		pthread_mutex_lock(&first->mutex);
+		pthread_mutex_lock(&second->mutex);
+		left->in_use = 0;
+		left->available_at = available_at;
 		right->in_use = 0;
 		right->available_at = available_at;
+		pthread_mutex_unlock(&second->mutex);
+		pthread_mutex_unlock(&first->mutex);
 	}
-
+	pthread_mutex_lock(&data->scheduler_mutex);
 	pthread_cond_broadcast(&data->scheduler_cond);
 	pthread_mutex_unlock(&data->scheduler_mutex);
 }

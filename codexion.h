@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:14:13 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/27 12:39:25 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/11 11:22:18 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,6 @@ typedef struct s_dongle
 	long				available_at;
 
 	pthread_mutex_t		mutex;
-	pthread_cond_t		cond;
 }						t_dongle;
 
 typedef struct  s_request
@@ -141,5 +140,6 @@ int	try_reserve_dongles(t_request *request, long now);
 void	release_dongles(t_request *request);
 
 long	get_time_ms(void);
+void	log_state(t_coder *coder, const char *message);
 
 #endif
