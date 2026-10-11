@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:14:13 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/10/11 11:22:18 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/11 15:22:57 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,12 +109,10 @@ typedef	struct s_heap
 
 int						is_numeric(char **argv);
 int						validate_args(char **argv, t_args *argz);
-void					print_args(t_args args);
 
 int						init_data(t_data *data, t_args *args);
 int					init_dongles(t_data *data);
 int					init_coders(t_data *data);
-void	print_coders(t_data *data);
 void	*coder_routine(void *arg);
 
 int			heap_init(t_heap *heap, int capacity,

@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:13:39 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/10/07 08:36:24 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/11 15:22:42 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,9 +110,6 @@ int	main(int argc, char **argv)
 		destroy_data(&data);
 		return (1);
 	}
-
-	print_args(data.args);
-	print_coders(&data);
 
 	created_coders = 0;
 	thread_error = 0;

@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 07:34:18 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/10/11 12:11:24 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/11 14:04:05 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,8 @@ void *coder_routine(void *arg)
 		        free(request);
 
         perform_debug(coder);
+		if (is_stopped(data))
+			break;
         perform_refactor(coder);
 
 
