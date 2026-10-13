@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:13:39 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/10/12 13:56:30 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/13 07:43:46 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,38 +14,39 @@
 
 int	is_numeric(char **argv)
 {
-	static const char	*names[] = {
-		NULL,
-		"Number of coders",
-		"Time to burnout",
-		"Time to compile",
-		"Time to debug",
-		"Time to refactor",
-		"Number of compiles",
-		"Dongle cooldown"
-	};
-	int					i;
-	int					j;
+	int	i;
+	int	j;
+	int	digit;
+	int	value;
 
 	i = 1;
 	while (i < 8)
 	{
 		if (argv[i][0] == '\0')
 		{
-			fprintf(stderr, "Error: %s must be a positive integer.\n",
-				names[i]);
+			fprintf(stderr,
+				"Error: Argument %d must be a positive integer.\n", i);
 			return (1);
 		}
 		j = 0;
+		value = 0;
 		while (argv[i][j])
 		{
 			if (argv[i][j] < '0' || argv[i][j] > '9')
 			{
 				fprintf(stderr,
-					"Error: %s must be a positive integer.\n",
-					names[i]);
+					"Error: Argument %d must contain only digits.\n", i);
 				return (1);
 			}
+			digit = argv[i][j] - '0';
+			if (value > (2147483647 - digit) / 10)
+			{
+				fprintf(stderr,
+					"Error: Argument %d exceeds the maximum integer value.\n",
+					i);
+				return (1);
+			}
+			value = value * 10 + digit;
 			j++;
 		}
 		i++;
@@ -135,15 +136,11 @@ int	main(int argc, char **argv)
 		return (1);
 	}
 	if (is_numeric(argv))
-	{
-		printf("Error processing args\n");
 		return (1);
-	}
+
 	if (validate_args(argv, &argz))
-	{
-		printf("Error processing args\n");
 		return (1);
-	}
+
 	if (init_data(&data, &argz))
 		return (1);
 

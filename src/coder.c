@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 07:34:18 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/10/11 14:04:05 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/13 08:46:19 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,19 +16,21 @@ static void perform_compile(t_coder *coder);
 static void perform_debug(t_coder *coder);
 static void perform_refactor(t_coder *coder);
 static int is_stopped(t_data *data);
+static int should_continue(t_coder *coder);
 static int	all_coders_finished(t_data *data); //temp check to see if program terminates after nb_compiles is reached
+
 void *coder_routine(void *arg)
 {
     t_coder    *coder;
     t_data     *data;
     t_request  *request;
     long       now;
+	int	granted;
 
     coder = (t_coder *)arg;
     data = coder->data;
 
-    while (coder->compile_count < data->args.nb_compiles
-        && is_stopped(data) == 0)
+    while (should_continue(coder))
     {
         now = get_time_ms();
 
@@ -42,10 +44,15 @@ void *coder_routine(void *arg)
 
         if (data->stop != 0)
         {
-            request = coder->request;
+			 request = coder->request;
+    		granted = (request != NULL && request->granted != 0);
             coder->request = NULL;
             pthread_mutex_unlock(&data->scheduler_mutex);
-            free(request);
+			if (granted)
+			{
+				release_dongles(request);
+				free(request);
+			}
             break ;
         }
 
@@ -55,14 +62,14 @@ void *coder_routine(void *arg)
 
         perform_compile(coder);
         release_dongles(request);
+		free(request);
 
-		        free(request);
-
+		if (is_stopped(data))
+    		break;
         perform_debug(coder);
 		if (is_stopped(data))
 			break;
         perform_refactor(coder);
-
 
 		// testing if programm stops after all coders have reached nb_compiles
 		if (all_coders_finished(data))
@@ -144,4 +151,17 @@ static int	all_coders_finished(t_data *data)
 	}
 	pthread_mutex_unlock(&data->scheduler_mutex);
 	return (1);
+}
+
+static int should_continue(t_coder *coder)
+{
+    int result;
+    t_data *data;
+
+    data = coder->data;
+    pthread_mutex_lock(&data->scheduler_mutex);
+    result = (coder->compile_count < data->args.nb_compiles
+            && data->stop == 0);
+    pthread_mutex_unlock(&data->scheduler_mutex);
+    return (result);
 }

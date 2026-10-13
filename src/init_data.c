@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:14:25 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/10/11 10:23:46 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/13 08:38:05 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,6 +180,8 @@ int init_coders(t_data *data)
 
 	if (data->waiters)
 	{
+		while (data->waiters->size > 0)
+			free(heap_pop(data->waiters));
 		destroy_heap(data->waiters);
 		free(data->waiters);
 		data->waiters = NULL;
