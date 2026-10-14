@@ -6,13 +6,13 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 07:34:18 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/10/13 08:46:19 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/14 13:58:40 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../codexion.h"
 
-static void perform_compile(t_coder *coder);
+static int perform_compile(t_coder *coder);
 static void perform_debug(t_coder *coder);
 static void perform_refactor(t_coder *coder);
 static int is_stopped(t_data *data);
@@ -60,12 +60,17 @@ void *coder_routine(void *arg)
         coder->request = NULL;
         pthread_mutex_unlock(&data->scheduler_mutex);
 
-        perform_compile(coder);
-        release_dongles(request);
+		if (!perform_compile(coder))
+		{
+			release_dongles(request);
+			free(request);
+			break;
+		}
+		release_dongles(request);
 		free(request);
 
 		if (is_stopped(data))
-    		break;
+			break;
         perform_debug(coder);
 		if (is_stopped(data))
 			break;
@@ -85,12 +90,18 @@ void *coder_routine(void *arg)
     return (NULL);
 }
 
-static void perform_compile(t_coder *coder)
+static int perform_compile(t_coder *coder)
 {
     t_data  *data;
 
+
     data = coder->data;
 	pthread_mutex_lock(&data->scheduler_mutex);
+	if (data->stop)
+	{
+		pthread_mutex_unlock(&data->scheduler_mutex);
+		return(0);
+	}
     coder->last_compile = get_time_ms();
 	pthread_mutex_unlock(&data->scheduler_mutex);
 
@@ -101,6 +112,7 @@ static void perform_compile(t_coder *coder)
 	pthread_mutex_lock(&data->scheduler_mutex);
 	coder->compile_count++;
 	pthread_mutex_unlock(&data->scheduler_mutex);
+	return (1);
 }
 
 static void perform_debug(t_coder *coder)
