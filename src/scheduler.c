@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/18 13:39:03 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/10/11 12:09:46 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/14 07:34:13 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ int try_reserve_dongles(t_request *request, long now)
 
 void	release_dongles(t_request *request)
 {
-t_coder		*coder;
+	t_coder		*coder;
 	t_dongle	*left;
 	t_dongle	*right;
 	t_dongle	*first;

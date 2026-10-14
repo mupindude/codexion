@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/27 12:16:45 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/10/12 07:32:45 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/14 07:41:04 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,11 @@ void *monitor_routine(void *arg)
         }
         pthread_mutex_unlock(&data->scheduler_mutex);
 
-        now = get_time_ms();
-        i = 0;
+		i = 0;
         while (i < data->args.nb_coders)
         {
             pthread_mutex_lock(&data->scheduler_mutex);
+			now = get_time_ms();
             deadline = data->coders[i].last_compile
                 + data->args.time_to_burnout;
             if (data->stop == 0

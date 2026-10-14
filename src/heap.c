@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/28 13:43:30 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/16 13:48:03 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/14 07:25:49 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,7 @@ t_request	*heap_pop(t_heap *heap)
 
 void	destroy_heap(t_heap *heap)
 {
-	if ( heap == NULL)
+	if (heap == NULL)
 		return ;
 	free(heap->entries);
 	heap->entries = NULL;
