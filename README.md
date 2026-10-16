@@ -13,3 +13,7 @@ https://www.youtube.com/watch?v=d9s_d28yJq0&list=PLfqABt5AS4FmuQf70psXrsMLEDQXNk
 
 #Challenges
 Pthreads are not natively supported on Windows
+
+#Blocking cases
+Head of line blocking
+Circula lock blocking in dongle reservation

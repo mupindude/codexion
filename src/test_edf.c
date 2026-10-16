@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 07:13:34 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/29 07:20:35 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/15 07:59:56 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ int	main(void)
 	b.s_coder->id = 2;
 	c.s_coder->id = 3;
 
-	a.arrival_time = 10;
-	a.deadline = 500;
+	a.arrival_time = 100;
+	a.deadline = 600;
 
 	b.arrival_time = 20;
 	b.deadline = 100;
