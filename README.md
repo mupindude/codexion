@@ -17,3 +17,4 @@ Pthreads are not natively supported on Windows
 #Blocking cases
 Head of line blocking
 Circula lock blocking in dongle reservation
+Deadlocks prevention in dongle mutex

@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:14:13 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/10/11 15:22:57 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/17 13:49:26 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,6 +120,7 @@ int			heap_init(t_heap *heap, int capacity,
 int			heap_push(t_heap *heap, t_request *request);
 t_request	*heap_peek(t_heap *heap);
 t_request	*heap_pop(t_heap *heap);
+t_request	*heap_remove_at(t_heap *heap, int index);
 
 int			compare_fifo(t_request *a, t_request *b);
 int			compare_edf(t_request *a, t_request *b);
@@ -134,6 +135,7 @@ void	*scheduler_routine(void *arg);
 
 void *monitor_routine(void *arg);
 
+int	dongles_are_available(t_request *request, long now);
 int	try_reserve_dongles(t_request *request, long now);
 void	release_dongles(t_request *request);
 
