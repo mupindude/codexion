@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 07:34:18 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/10/14 13:58:40 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/17 07:28:09 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ static void perform_debug(t_coder *coder);
 static void perform_refactor(t_coder *coder);
 static int is_stopped(t_data *data);
 static int should_continue(t_coder *coder);
-static int	all_coders_finished(t_data *data); //temp check to see if program terminates after nb_compiles is reached
 
 void *coder_routine(void *arg)
 {
@@ -75,16 +74,6 @@ void *coder_routine(void *arg)
 		if (is_stopped(data))
 			break;
         perform_refactor(coder);
-
-		// testing if programm stops after all coders have reached nb_compiles
-		if (all_coders_finished(data))
-		{
-			pthread_mutex_lock(&data->scheduler_mutex);
-			data->stop = 1;
-			pthread_cond_broadcast(&data->scheduler_cond);
-			pthread_mutex_unlock(&data->scheduler_mutex);
-		}
-
     }
 
     return (NULL);
@@ -93,26 +82,44 @@ void *coder_routine(void *arg)
 static int perform_compile(t_coder *coder)
 {
     t_data  *data;
-
+    int     i;
+    int     all_finished;
 
     data = coder->data;
-	pthread_mutex_lock(&data->scheduler_mutex);
-	if (data->stop)
-	{
-		pthread_mutex_unlock(&data->scheduler_mutex);
-		return(0);
-	}
+    pthread_mutex_lock(&data->scheduler_mutex);
+    if (data->stop)
+    {
+        pthread_mutex_unlock(&data->scheduler_mutex);
+        return (0);
+    }
     coder->last_compile = get_time_ms();
-	pthread_mutex_unlock(&data->scheduler_mutex);
+    pthread_mutex_unlock(&data->scheduler_mutex);
 
     log_state(coder, "is compiling");
+    usleep(data->args.time_to_compile * 1000);
 
-	usleep(data->args.time_to_compile * 1000);
+    pthread_mutex_lock(&data->scheduler_mutex);
+    coder->compile_count++;
 
-	pthread_mutex_lock(&data->scheduler_mutex);
-	coder->compile_count++;
-	pthread_mutex_unlock(&data->scheduler_mutex);
-	return (1);
+    i = 0;
+    all_finished = 1;
+    while (i < data->args.nb_coders)
+    {
+        if (data->coders[i].compile_count
+            < data->args.nb_compiles)
+        {
+            all_finished = 0;
+            break;
+        }
+        i++;
+    }
+    if (all_finished)
+    {
+        data->stop = 1;
+        pthread_cond_broadcast(&data->scheduler_cond);
+    }
+    pthread_mutex_unlock(&data->scheduler_mutex);
+    return (1);
 }
 
 static void perform_debug(t_coder *coder)
@@ -145,6 +152,7 @@ static int is_stopped(t_data *data)
     return (stop);
 }
 
+/*
 static int	all_coders_finished(t_data *data)
 {
 	int	i;
@@ -164,6 +172,7 @@ static int	all_coders_finished(t_data *data)
 	pthread_mutex_unlock(&data->scheduler_mutex);
 	return (1);
 }
+*/
 
 static int should_continue(t_coder *coder)
 {
