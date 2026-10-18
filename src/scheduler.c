@@ -6,13 +6,15 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/18 13:39:03 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/10/17 13:53:30 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/18 18:14:31 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../codexion.h"
 
 static int	find_best_eligible_request(t_data *data, long now);
+static void	log_one_dongle(t_coder *coder, t_dongle *dongle);
+static void	log_dongle_acquisition(t_coder *coder);
 
 void	*scheduler_routine(void *arg)
 {
@@ -40,7 +42,7 @@ void	*scheduler_routine(void *arg)
 			{
 				heap_remove_at(data->waiters, best);
 				request->granted = 1;
-				log_state(request->s_coder, "has taken dongles");
+				log_dongle_acquisition(request->s_coder);
 				pthread_cond_broadcast(&data->scheduler_cond);
 			}
 			else
@@ -225,4 +227,33 @@ int	dongles_are_available(t_request *request, long now)
 	pthread_mutex_unlock(&second->mutex);
 	pthread_mutex_unlock(&first->mutex);
 	return (available);
+}
+
+
+static void	log_one_dongle(t_coder *coder, t_dongle *dongle)
+{
+	long	timestamp;
+
+	timestamp = get_time_ms() - coder->data->start_time;
+	pthread_mutex_lock(&coder->data->print_mutex);
+	printf("%ld Coder %d has taken dongle %d\n",
+		timestamp, coder->id, dongle->id);
+	pthread_mutex_unlock(&coder->data->print_mutex);
+}
+
+static void	log_dongle_acquisition(t_coder *coder)
+{
+	t_dongle	*first;
+	t_dongle	*second;
+
+	first = coder->left_dongle;
+	second = coder->right_dongle;
+	if (first->id > second->id)
+	{
+		first = coder->right_dongle;
+		second = coder->left_dongle;
+	}
+	log_one_dongle(coder, first);
+	if (second != first)
+		log_one_dongle(coder, second);
 }

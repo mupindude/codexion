@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/27 12:16:45 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/10/14 07:41:04 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/18 18:00:38 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,11 +49,14 @@ void *monitor_routine(void *arg)
                 pthread_mutex_unlock(&data->scheduler_mutex);
 
                 pthread_mutex_lock(&data->print_mutex);
-                printf("%ld Coder %d burned out\n", get_time_ms(), coder_id);
-                printf("Deadline: %ld | Detected: %ld | Delay: %ld ms\n",
-                    deadline, now, now - deadline);
-                pthread_mutex_unlock(&data->print_mutex);
-                return (NULL);
+				printf("%ld Coder %d burned out\n",
+					now - data->start_time, coder_id);
+				printf("Deadline: %ld | Detected: %ld | Delay: %ld ms\n",
+					deadline - data->start_time,
+					now - data->start_time,
+					now - deadline);
+				pthread_mutex_unlock(&data->print_mutex);
+				return (NULL);
             }
             pthread_mutex_unlock(&data->scheduler_mutex);
             i++;
