@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:14:13 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/10/17 13:49:26 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/18 15:25:40 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,6 @@ typedef struct s_data
 	int					stop;
 
 	pthread_mutex_t		print_mutex;
-	pthread_mutex_t		stop_mutex;
-
 }						t_data;
 
 typedef struct s_coder
@@ -130,7 +128,6 @@ void	destroy_data(t_data *data);
 
 t_request	*create_request(t_coder *coder, long now, int time_to_burnout);
 int	submit_request(t_data *data, t_coder *coder, long now);
-t_request	*get_next_request(t_data *data);
 void	*scheduler_routine(void *arg);
 
 void *monitor_routine(void *arg);

@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:14:25 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/10/14 13:57:29 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/18 15:23:18 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ int	init_data(t_data *data, t_args *args)
 	data->stop = 0;
 	data->start_time = get_time_ms();
 	data->waiters = NULL;
-	data->current_request = NULL;
 
 	data->coders = malloc(sizeof(t_coder) * data->args.nb_coders);
 	if (!data->coders)
@@ -41,17 +40,8 @@ int	init_data(t_data *data, t_args *args)
 		return (1);
 	}
 
-	if (pthread_mutex_init(&data->stop_mutex, NULL) != 0)
-	{
-		pthread_mutex_destroy(&data->print_mutex);
-		free(data->coders);
-		free(data->dongles);
-		return (1);
-	}
-
 	if (pthread_mutex_init(&data->scheduler_mutex, NULL) != 0)
 	{
-		pthread_mutex_destroy(&data->stop_mutex);
 		pthread_mutex_destroy(&data->print_mutex);
 		free(data->coders);
 		free(data->dongles);
@@ -61,7 +51,6 @@ int	init_data(t_data *data, t_args *args)
 	if (pthread_cond_init(&data->scheduler_cond, NULL) != 0)
 	{
 		pthread_mutex_destroy(&data->scheduler_mutex);
-		pthread_mutex_destroy(&data->stop_mutex);
 		pthread_mutex_destroy(&data->print_mutex);
 		free(data->coders);
 		free(data->dongles);
@@ -187,7 +176,6 @@ int init_coders(t_data *data)
 		i++;
 	}
 	pthread_mutex_destroy(&data->print_mutex);
-	pthread_mutex_destroy(&data->stop_mutex);
 	pthread_mutex_destroy(&data->scheduler_mutex);
 	pthread_cond_destroy(&data->scheduler_cond);
 
@@ -196,21 +184,6 @@ int init_coders(t_data *data)
 	free (data->dongles);
 	data->dongles = NULL;
  }
-
- /*
- static void cleanup_init_data(t_data *data, int heap_initialized)
- {
-	if (heap_initialized)
-		destroy_heap(data->waiters);
-	free(data->waiters);
-	pthread_cond_destroy(&data->scheduler_cond);
-	pthread_mutex_destroy(&data->scheduler_mutex);
-	pthread_mutex_destroy(&data->stop_mutex);
-	pthread_mutex_destroy(&data->print_mutex);
-	free(data->coders);
-	free(data->dongles);
- }
-	*/
 
 static void	destroy_dongles(t_data *data, int count)
 {
@@ -225,6 +198,5 @@ static void	destroy_global_sync(t_data *data)
 {
 	pthread_cond_destroy(&data->scheduler_cond);
 	pthread_mutex_destroy(&data->scheduler_mutex);
-	pthread_mutex_destroy(&data->stop_mutex);
 	pthread_mutex_destroy(&data->print_mutex);
 }

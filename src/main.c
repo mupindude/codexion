@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:13:39 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/10/13 07:43:46 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/18 15:28:17 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,7 +201,6 @@ int	main(int argc, char **argv)
 
 	i = 0;
 
-	// testing if programm stops after all coders have reached nb_compiles
 	while (i < data.args.nb_coders)
 	{
 		printf("Coder %d compiled %d times\n",

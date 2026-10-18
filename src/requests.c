@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/16 08:03:33 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/28 08:02:22 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/18 15:23:36 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,4 @@ int	submit_request(t_data *data, t_coder *coder, long now)
 	pthread_cond_signal(&data->scheduler_cond);
 	pthread_mutex_unlock(&data->scheduler_mutex);
 	return (0);
-}
-
-t_request	*get_next_request(t_data *data)
-{
-	return (heap_pop(data->waiters));
 }
