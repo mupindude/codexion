@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:13:39 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/10/18 15:28:17 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/20 07:31:43 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -196,8 +196,6 @@ int	main(int argc, char **argv)
 
 	pthread_join(data.scheduler, NULL);
 	pthread_join(data.monitor, NULL);
-
-	printf("Current time: %ld ms\n", get_time_ms());
 
 	i = 0;
 

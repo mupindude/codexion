@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 08:09:46 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/10/18 17:55:08 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/20 07:45:05 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,6 @@ void	log_state(t_coder *coder, const char *message)
 
 	timestamp = get_time_ms() - coder->data->start_time;
 	pthread_mutex_lock(&coder->data->print_mutex);
-	printf("%ld Coder %d %s\n", timestamp, coder->id, message);
+	printf("%ld Coder [%d] %s\n", timestamp, coder->id, message);
 	pthread_mutex_unlock(&coder->data->print_mutex);
 }
