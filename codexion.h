@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:14:13 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/10/18 15:25:40 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/20 08:22:06 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,126 +17,129 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
-# include <time.h>
 # include <sys/time.h>
+# include <time.h>
 # include <unistd.h>
 
-typedef struct	s_data	t_data;
-typedef struct	s_coder	t_coder;
-typedef struct	s_dongle	t_dongle;
-typedef struct	s_request t_request;
-typedef	struct	s_heap	t_heap;
+typedef struct s_data		t_data;
+typedef struct s_coder		t_coder;
+typedef struct s_dongle		t_dongle;
+typedef struct s_request	t_request;
+typedef struct s_heap		t_heap;
 
 typedef enum e_scheduler
 {
 	FIFO,
 	EDF
-} t_scheduler;
+}							t_scheduler;
 
 typedef struct s_args
 {
-	int					nb_coders;
-	int					time_to_burnout;
-	int					time_to_compile;
-	int					time_to_debug;
-	int					time_to_refactor;
-	int					nb_compiles;
-	int					dongle_cooldown;
-	t_scheduler			scheduler;
-}						t_args;
+	int						nb_coders;
+	int						time_to_burnout;
+	int						time_to_compile;
+	int						time_to_debug;
+	int						time_to_refactor;
+	int						nb_compiles;
+	int						dongle_cooldown;
+	t_scheduler				scheduler;
+}							t_args;
 
 typedef struct s_data
 {
-	t_args				args;
-	t_coder				*coders;
-	t_dongle			*dongles;
-	t_heap				*waiters;
-	t_request			*current_request;
+	t_args					args;
+	t_coder					*coders;
+	t_dongle				*dongles;
+	t_heap					*waiters;
+	t_request				*current_request;
 
-	pthread_mutex_t		scheduler_mutex;
-	pthread_cond_t		scheduler_cond;
-	pthread_t			scheduler;
-	pthread_t			monitor;
+	pthread_mutex_t			scheduler_mutex;
+	pthread_cond_t			scheduler_cond;
+	pthread_t				scheduler;
+	pthread_t				monitor;
 
-	long				start_time;
-	int					stop;
+	long					start_time;
+	int						stop;
 
-	pthread_mutex_t		print_mutex;
-}						t_data;
+	pthread_mutex_t			print_mutex;
+}							t_data;
 
 typedef struct s_coder
 {
-	int					id;
-	pthread_t			thread;
+	int						id;
+	pthread_t				thread;
 
-	int					compile_count;
-	long				last_compile;
+	int						compile_count;
+	long					last_compile;
 
-	t_request			*request;
+	t_request				*request;
 
-	t_dongle			*left_dongle;
-	t_dongle			*right_dongle;
+	t_dongle				*left_dongle;
+	t_dongle				*right_dongle;
 
-	t_data				*data;
-}						t_coder;
+	t_data					*data;
+}							t_coder;
 
 typedef struct s_dongle
 {
-	int					id;
-	int					in_use;
-	long				available_at;
+	int						id;
+	int						in_use;
+	long					available_at;
 
-	pthread_mutex_t		mutex;
-}						t_dongle;
+	pthread_mutex_t			mutex;
+}							t_dongle;
 
-typedef struct  s_request
+typedef struct s_request
 {
-	t_coder	*s_coder;
-	long	arrival_time;
-	long	deadline;
-	int		granted;
-}	t_request;
+	t_coder					*s_coder;
+	long					arrival_time;
+	long					deadline;
+	int						granted;
+}							t_request;
 
-typedef	struct s_heap
+typedef struct s_heap
 {
-	t_request	**entries;
-	int			size;
-	int			capacity;
-	int			(*compare) (t_request *a, t_request *b);
-}	t_heap;
+	t_request				**entries;
+	int						size;
+	int						capacity;
+	int						(*compare)(t_request *a, t_request *b);
+}							t_heap;
 
-int						is_numeric(char **argv);
-int						validate_args(char **argv, t_args *argz);
+int							is_numeric(char **argv);
+int							validate_args(char **argv, t_args *argz);
 
-int						init_data(t_data *data, t_args *args);
-int					init_dongles(t_data *data);
-int					init_coders(t_data *data);
-void	*coder_routine(void *arg);
+int							init_data(t_data *data, t_args *args);
+int							init_dongles(t_data *data);
+int							init_coders(t_data *data);
+void						*coder_routine(void *arg);
+int							perform_compile(t_coder *coder);
 
-int			heap_init(t_heap *heap, int capacity,
-				int (*compare)(t_request *, t_request *));
-int			heap_push(t_heap *heap, t_request *request);
-t_request	*heap_peek(t_heap *heap);
-t_request	*heap_pop(t_heap *heap);
-t_request	*heap_remove_at(t_heap *heap, int index);
+int							heap_init(t_heap *heap, int capacity,
+								int (*compare)(t_request *, t_request *));
+int							heap_push(t_heap *heap, t_request *request);
+t_request					*heap_peek(t_heap *heap);
+t_request					*heap_pop(t_heap *heap);
+t_request					*heap_remove_at(t_heap *heap, int index);
 
-int			compare_fifo(t_request *a, t_request *b);
-int			compare_edf(t_request *a, t_request *b);
+int							compare_fifo(t_request *a, t_request *b);
+int							compare_edf(t_request *a, t_request *b);
 
-void		destroy_heap(t_heap *heap);
-void	destroy_data(t_data *data);
+void						destroy_heap(t_heap *heap);
+void						destroy_data(t_data *data);
 
-t_request	*create_request(t_coder *coder, long now, int time_to_burnout);
-int	submit_request(t_data *data, t_coder *coder, long now);
-void	*scheduler_routine(void *arg);
+t_request					*create_request(t_coder *coder, long now,
+								int time_to_burnout);
+int							submit_request(t_data *data, t_coder *coder,
+								long now);
+void						*scheduler_routine(void *arg);
 
-void *monitor_routine(void *arg);
+void						*monitor_routine(void *arg);
 
-int	dongles_are_available(t_request *request, long now);
-int	try_reserve_dongles(t_request *request, long now);
-void	release_dongles(t_request *request);
+int							dongles_are_available(t_request *request, long now);
+int							try_reserve_dongles(t_request *request, long now);
+void						release_dongles(t_request *request);
 
-long	get_time_ms(void);
-void	log_state(t_coder *coder, const char *message);
+long						get_time_ms(void);
+void						log_state(t_coder *coder, const char *message);
 
 #endif
