@@ -11,7 +11,8 @@ SRCS		=	src/main.c \
 				src/requests.c \
 				src/time_utils.c \
 				src/monitor.c \
-				src/compile.c
+				src/compile.c \
+				src/phase.c
 
 OBJ_DIR = obj
 
