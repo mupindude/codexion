@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:14:13 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/10/21 08:33:23 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/21 13:56:39 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,8 +109,11 @@ int							is_numeric(char **argv);
 int							validate_args(char **argv, t_args *argz);
 
 int							init_data(t_data *data, t_args *args);
+int							init_global_sync(t_data *data);
 int							init_waiters(t_data *data);
 int							init_dongles(t_data *data);
+int							init_arrays(t_data *data);
+int							init_resources(t_data *data);
 
 int							init_coders(t_data *data);
 void						perform_debug(t_coder *coder);

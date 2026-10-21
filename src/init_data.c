@@ -6,14 +6,11 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:14:25 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/10/21 08:40:12 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/21 14:01:25 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../codexion.h"
-
-static void	destroy_dongles(t_data *data, int count);
-static void	destroy_global_sync(t_data *data);
 
 int	init_data(t_data *data, t_args *args)
 {
@@ -21,49 +18,16 @@ int	init_data(t_data *data, t_args *args)
 	data->stop = 0;
 	data->start_time = get_time_ms();
 	data->waiters = NULL;
-	data->coders = malloc(sizeof(t_coder) * data->args.nb_coders);
-	if (!data->coders)
+	if (init_arrays(data))
 		return (1);
-	data->dongles = malloc(sizeof(t_dongle) * data->args.nb_coders);
-	if (!data->dongles)
-	{
-		free(data->coders);
-		return (1);
-	}
-	if (pthread_mutex_init(&data->print_mutex, NULL) != 0)
+	if (init_global_sync(data))
 	{
 		free(data->coders);
 		free(data->dongles);
 		return (1);
 	}
-	if (pthread_mutex_init(&data->scheduler_mutex, NULL) != 0)
+	if (init_resources(data))
 	{
-		pthread_mutex_destroy(&data->print_mutex);
-		free(data->coders);
-		free(data->dongles);
-		return (1);
-	}
-	if (pthread_cond_init(&data->scheduler_cond, NULL) != 0)
-	{
-		pthread_mutex_destroy(&data->scheduler_mutex);
-		pthread_mutex_destroy(&data->print_mutex);
-		free(data->coders);
-		free(data->dongles);
-		return (1);
-	}
-	if (init_waiters(data))
-	{
-		destroy_global_sync(data);
-		free(data->coders);
-		free(data->dongles);
-		return (1);
-	}
-	if (init_dongles(data))
-	{
-		destroy_heap(data->waiters);
-		free(data->waiters);
-		data->waiters = NULL;
-		destroy_global_sync(data);
 		free(data->coders);
 		free(data->dongles);
 		return (1);
@@ -72,26 +36,6 @@ int	init_data(t_data *data, t_args *args)
 	{
 		destroy_data(data);
 		return (1);
-	}
-	return (0);
-}
-
-int	init_dongles(t_data *data)
-{
-	int	i;
-
-	i = 0;
-	while (i < data->args.nb_coders)
-	{
-		data->dongles[i].id = i;
-		data->dongles[i].in_use = 0;
-		data->dongles[i].available_at = 0;
-		if (pthread_mutex_init(&data->dongles[i].mutex, NULL) != 0)
-		{
-			destroy_dongles(data, i);
-			return (1);
-		}
-		i++;
 	}
 	return (0);
 }
@@ -144,20 +88,4 @@ void	destroy_data(t_data *data)
 	data->coders = NULL;
 	free(data->dongles);
 	data->dongles = NULL;
-}
-
-static void	destroy_dongles(t_data *data, int count)
-{
-	while (count > 0)
-	{
-		count--;
-		pthread_mutex_destroy(&data->dongles[count].mutex);
-	}
-}
-
-static void	destroy_global_sync(t_data *data)
-{
-	pthread_cond_destroy(&data->scheduler_cond);
-	pthread_mutex_destroy(&data->scheduler_mutex);
-	pthread_mutex_destroy(&data->print_mutex);
 }

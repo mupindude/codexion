@@ -6,6 +6,10 @@ CFLAGS		= -Wall -Wextra -Werror -pthread
 SRCS		=	src/main.c \
 				src/init_data.c \
 				src/init_waiters.c \
+				src/init_sync.c \
+				src/init_dongles.c \
+				src/init_arrays.c \
+				src/init_resources.c \
 				src/heap.c \
 				src/heap_compare.c \
 				src/heap_reorder.c \
