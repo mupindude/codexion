@@ -5,14 +5,18 @@ CFLAGS		= -Wall -Wextra -Werror -pthread
 
 SRCS		=	src/main.c \
 				src/init_data.c \
+				src/init_waiters.c \
 				src/heap.c \
+				src/heap_compare.c \
+				src/heap_reorder.c \
+				src/heap_remove.c \
 				src/coder.c \
+				src/phase.c \
+				src/compile.c \
 				src/scheduler.c \
 				src/requests.c \
-				src/time_utils.c \
 				src/monitor.c \
-				src/compile.c \
-				src/phase.c
+				src/time_utils.c
 
 OBJ_DIR = obj
 
