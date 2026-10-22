@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 07:41:41 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/29 07:42:40 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/22 07:18:19 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,13 @@
 
 int	main(void)
 {
-	t_data		data;
-	t_coder		coder1;
-	t_coder		coder2;
-	t_dongle	dongles[2];
-	t_request	request1;
-	t_request	request2;
-	long		now;
+	t_data data;
+	t_coder coder1;
+	t_coder coder2;
+	t_dongle dongles[2];
+	t_request request1;
+	t_request request2;
+	long now;
 
 	dongles[0].id = 0;
 	dongles[1].id = 1;
@@ -42,9 +42,9 @@ int	main(void)
 	now = get_time_ms();
 
 	/*
-	 * Simulate coder 1 releasing the dongles.
-	 * They cannot be used for another 200 ms.
-	 */
+		* Simulate coder 1 releasing the dongles.
+		* They cannot be used for another 200 ms.
+		*/
 	dongles[0].available_at = now + 200;
 	dongles[1].available_at = now + 200;
 

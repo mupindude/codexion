@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 07:32:57 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/29 07:33:29 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/22 07:18:06 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 int	main(void)
 {
-	t_coder		coder;
-	t_request	*request;
+	t_coder coder;
+	t_request *request;
 
 	coder.id = 1;
 	coder.last_compile = 1000;

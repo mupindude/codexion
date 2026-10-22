@@ -6,15 +6,15 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 08:09:46 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/10/20 07:45:05 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/22 07:19:22 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../codexion.h"
 
-long get_time_ms(void)
+long	get_time_ms(void)
 {
-	struct timeval tv;
+	struct timeval	tv;
 
 	gettimeofday(&tv, NULL);
 	return ((tv.tv_sec * 1000L) + (tv.tv_usec / 1000L));

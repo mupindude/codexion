@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:23:19 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/01 13:37:57 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/22 07:18:36 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,22 +24,18 @@ void	print_args(t_args args)
 	printf("scheduler        : %d\n", args.scheduler);
 }
 
-void	print_coders(t_data *data) //function to test the initialization
+void	print_coders(t_data *data) // function to test the initialization
 {
-	int	i;
+	int i;
 
 	i = 0;
 	while (i < data->args.nb_coders)
 	{
 		printf("Coder %d\n", data->coders[i].id);
-		printf("  left  dongle: %d\n",
-			data->coders[i].left_dongle->id);
-		printf("  right dongle: %d\n",
-			data->coders[i].right_dongle->id);
-		printf("  compile count: %d\n",
-			data->coders[i].compile_count);
-		printf("  last compile: %ld\n",
-			data->coders[i].last_compile);
+		printf("  left  dongle: %d\n", data->coders[i].left_dongle->id);
+		printf("  right dongle: %d\n", data->coders[i].right_dongle->id);
+		printf("  compile count: %d\n", data->coders[i].compile_count);
+		printf("  last compile: %ld\n", data->coders[i].last_compile);
 		i++;
 	}
 }

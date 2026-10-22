@@ -6,126 +6,14 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:13:39 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/10/20 07:31:43 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/22 08:39:21 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../codexion.h"
 
-int	is_numeric(char **argv)
+static int	check_arg_count(int argc)
 {
-	int	i;
-	int	j;
-	int	digit;
-	int	value;
-
-	i = 1;
-	while (i < 8)
-	{
-		if (argv[i][0] == '\0')
-		{
-			fprintf(stderr,
-				"Error: Argument %d must be a positive integer.\n", i);
-			return (1);
-		}
-		j = 0;
-		value = 0;
-		while (argv[i][j])
-		{
-			if (argv[i][j] < '0' || argv[i][j] > '9')
-			{
-				fprintf(stderr,
-					"Error: Argument %d must contain only digits.\n", i);
-				return (1);
-			}
-			digit = argv[i][j] - '0';
-			if (value > (2147483647 - digit) / 10)
-			{
-				fprintf(stderr,
-					"Error: Argument %d exceeds the maximum integer value.\n",
-					i);
-				return (1);
-			}
-			value = value * 10 + digit;
-			j++;
-		}
-		i++;
-	}
-	return (0);
-}
-
-int	validate_args(char **argv, t_args *argz)
-{
-	argz->nb_coders = atoi(argv[1]);
-	if (argz->nb_coders < 2)
-	{
-		fprintf(stderr,
-			"Error: At least 2 coders are required.\n");
-		return (1);
-	}
-	argz->time_to_burnout = atoi(argv[2]);
-	if (argz->time_to_burnout <= 0)
-	{
-		fprintf(stderr,
-			"Error: Time to burnout must be greater than 0.\n");
-		return (1);
-	}
-	argz->time_to_compile = atoi(argv[3]);
-	if (argz->time_to_compile <= 0)
-	{
-		fprintf(stderr,
-			"Error: Time to compile must be greater than 0.\n");
-		return (1);
-	}
-	argz->time_to_debug = atoi(argv[4]);
-	if (argz->time_to_debug <= 0)
-	{
-		fprintf(stderr,
-			"Error: Time to debug must be greater than 0.\n");
-		return (1);
-	}
-	argz->time_to_refactor = atoi(argv[5]);
-	if (argz->time_to_refactor <= 0)
-	{
-		fprintf(stderr,
-			"Error: Time to refactor must be greater than 0.\n");
-		return (1);
-	}
-	argz->nb_compiles = atoi(argv[6]);
-	if (argz->nb_compiles <= 0)
-	{
-		fprintf(stderr,
-			"Error: Number of compiles must be greater than 0.\n");
-		return (1);
-	}
-	argz->dongle_cooldown = atoi(argv[7]);
-	if (argz->dongle_cooldown <= 0)
-	{
-		fprintf(stderr,
-			"Error: Dongle cooldown must be greater than 0.\n");
-		return (1);
-	}
-	if (strcmp(argv[8], "fifo") == 0)
-		argz->scheduler = FIFO;
-	else if (strcmp(argv[8], "edf") == 0)
-		argz->scheduler = EDF;
-	else
-	{
-		fprintf(stderr,
-			"Error: Scheduler must be 'fifo' or 'edf'.\n");
-		return (1);
-	}
-	return (0);
-}
-
-int	main(int argc, char **argv)
-{
-	t_args	argz;
-	t_data	data;
-	int		i;
-	int		created_coders;
-	int		thread_error;
-
 	if (argc != 9)
 	{
 		fprintf(stderr,
@@ -135,79 +23,29 @@ int	main(int argc, char **argv)
 			"dongle_cooldown fifo|edf\n");
 		return (1);
 	}
+	return (0);
+}
+
+int	main(int argc, char **argv)
+{
+	t_args	argz;
+	t_data	data;
+	int		created_coders;
+	int		thread_error;
+
+	if (check_arg_count(argc))
+		return (1);
 	if (is_numeric(argv))
 		return (1);
-
 	if (validate_args(argv, &argz))
 		return (1);
-
 	if (init_data(&data, &argz))
 		return (1);
-
-	if (pthread_create(&data.scheduler, NULL,
-			scheduler_routine, &data) != 0)
-	{
-		destroy_data(&data);
+	if (start_simulation(&data))
 		return (1);
-	}
-
-	if (pthread_create(&data.monitor, NULL,
-			monitor_routine, &data) != 0)
-	{
-		pthread_mutex_lock(&data.scheduler_mutex);
-		data.stop = 1;
-		pthread_cond_broadcast(&data.scheduler_cond);
-		pthread_mutex_unlock(&data.scheduler_mutex);
-		pthread_join(data.scheduler, NULL);
-		destroy_data(&data);
-		return (1);
-	}
-
-	created_coders = 0;
-	thread_error = 0;
-	i = 0;
-	while (i < data.args.nb_coders)
-	{
-		if (pthread_create(&data.coders[i].thread, NULL,
-				coder_routine, &data.coders[i]) != 0)
-		{
-			pthread_mutex_lock(&data.scheduler_mutex);
-			data.stop = 1;
-			pthread_cond_broadcast(&data.scheduler_cond);
-			pthread_mutex_unlock(&data.scheduler_mutex);
-			thread_error = 1;
-			break ;
-		}
-		created_coders++;
-		i++;
-	}
-
-	i = 0;
-	while (i < created_coders)
-	{
-		pthread_join(data.coders[i].thread, NULL);
-		i++;
-	}
-
-	pthread_mutex_lock(&data.scheduler_mutex);
-	data.stop = 1;
-	pthread_cond_broadcast(&data.scheduler_cond);
-	pthread_mutex_unlock(&data.scheduler_mutex);
-
-	pthread_join(data.scheduler, NULL);
-	pthread_join(data.monitor, NULL);
-
-	i = 0;
-
-	while (i < data.args.nb_coders)
-	{
-		printf("Coder %d compiled %d times\n",
-			data.coders[i].id,
-			data.coders[i].compile_count);
-		i++;
-	}
-
-	destroy_data(&data);
+	thread_error = start_coders(&data, &created_coders);
+	join_threads(&data, created_coders);
+	finish_simulation(&data);
 	if (thread_error)
 		return (1);
 	return (0);

@@ -4,6 +4,12 @@ CC			= cc
 CFLAGS		= -Wall -Wextra -Werror -pthread
 
 SRCS		=	src/main.c \
+				src/validate_args.c \
+				src/check_number.c \
+				src/start_coders.c \
+				src/start_simulation.c \
+				src/finish_simulation.c \
+				join_threads.c \
 				src/init_data.c \
 				src/init_waiters.c \
 				src/init_sync.c \

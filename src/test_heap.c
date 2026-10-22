@@ -2,31 +2,28 @@
 
 static void	print_request(t_request *request)
 {
-	printf("Coder %d | arrival: %ld | deadline: %ld\n",
-		request->s_coder->id,
-		request->arrival_time,
-		request->deadline);
+	printf("Coder %d | arrival: %ld | deadline: %ld\n", request->s_coder->id,
+		request->arrival_time, request->deadline);
 }
 
 int	main(void)
 {
-	t_heap		heap;
-	t_coder		coder1;
-	t_coder		coder2;
-	t_coder		coder3;
-	//t_coder		coder4;
+	t_heap heap;
+	t_coder coder1;
+	t_coder coder2;
+	t_coder coder3;
+	// t_coder		coder4;
 
-	t_request	req1;
-	t_request	req2;
-	t_request	req3;
-	//t_request	req4;
-
+	t_request req1;
+	t_request req2;
+	t_request req3;
+	// t_request	req4;
 
 	coder1.id = 1;
 	coder2.id = 2;
 	coder3.id = 3;
 
-	//coder4.id = 4;
+	// coder4.id = 4;
 
 	req3.s_coder = &coder3;
 	req3.arrival_time = 50;
@@ -40,10 +37,6 @@ int	main(void)
 	req2.arrival_time = 100;
 	req2.deadline = 300;
 
-
-
-
-
 	// req4.s_coder = &coder4;
 	// req4.arrival_time = 40;
 	// req4.deadline = 100;
@@ -51,15 +44,14 @@ int	main(void)
 	if (heap_init(&heap, 3, compare_edf))
 		return (1);
 
-	if (heap_push(&heap, &req3)
-    || heap_push(&heap, &req1)
-    || heap_push(&heap, &req2))
+	if (heap_push(&heap, &req3) || heap_push(&heap, &req1) || heap_push(&heap,
+			&req2))
 	{
 		destroy_heap(&heap);
 		return (1);
 	}
 
-	//heap_push(&heap, &req4);
+	// heap_push(&heap, &req4);
 
 	printf("PEEK:\n");
 	print_request(heap_peek(&heap));

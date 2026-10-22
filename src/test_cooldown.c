@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 07:37:20 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/29 07:37:35 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/22 07:17:39 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,12 @@
 
 int	main(void)
 {
-	t_data		data;
-	t_coder		coder;
-	t_dongle	left;
-	t_dongle	right;
-	t_request	request;
-	long		now;
+	t_data data;
+	t_coder coder;
+	t_dongle left;
+	t_dongle right;
+	t_request request;
+	long now;
 
 	left.in_use = 0;
 	right.in_use = 0;

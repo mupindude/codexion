@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:14:13 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/10/21 13:56:39 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/22 08:31:44 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,8 @@ int							init_arrays(t_data *data);
 int							init_resources(t_data *data);
 
 int							init_coders(t_data *data);
+int							start_coders(t_data *data, int *created_coders);
+void						join_threads(t_data *data, int created_coders);
 void						perform_debug(t_coder *coder);
 void						perform_refactor(t_coder *coder);
 void						*coder_routine(void *arg);
@@ -142,6 +144,8 @@ int							submit_request(t_data *data, t_coder *coder,
 void						*scheduler_routine(void *arg);
 
 void						*monitor_routine(void *arg);
+int							start_simulation(t_data *data);
+void						finish_simulation(t_data *data);
 
 int							dongles_are_available(t_request *request, long now);
 int							try_reserve_dongles(t_request *request, long now);

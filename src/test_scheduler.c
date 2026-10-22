@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/16 13:35:41 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/09/16 13:49:52 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/22 07:18:31 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,15 @@
 
 static void	print_request(t_request *request)
 {
-	printf("Coder %d | arrival: %ld | deadline: %ld\n",
-		request->s_coder->id,
-		request->arrival_time,
-		request->deadline);
+	printf("Coder %d | arrival: %ld | deadline: %ld\n", request->s_coder->id,
+		request->arrival_time, request->deadline);
 }
 
 int	main(void)
 {
-	t_data		data;
-	t_coder		coders[4];
-	int			i;
+	t_data data;
+	t_coder coders[4];
+	int i;
 
 	data.args.nb_coders = 4;
 	data.args.time_to_burnout = 1000;

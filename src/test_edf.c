@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 07:13:34 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/10/15 07:59:56 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/22 07:17:51 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 
 int	main(void)
 {
-	t_request	a;
-	t_request	b;
-	t_request	c;
-	t_request	*peek;
+	t_request a;
+	t_request b;
+	t_request c;
+	t_request *peek;
 
 	a.s_coder = malloc(sizeof(t_coder));
 	b.s_coder = malloc(sizeof(t_coder));
@@ -49,15 +49,15 @@ int	main(void)
 
 	printf("EDF PEEK:\n");
 	peek = heap_peek(&heap);
-	printf("Coder %d | arrival: %ld | deadline: %ld\n",
-		peek->s_coder->id, peek->arrival_time, peek->deadline);
+	printf("Coder %d | arrival: %ld | deadline: %ld\n", peek->s_coder->id,
+		peek->arrival_time, peek->deadline);
 
 	printf("\nEDF POP ORDER:\n");
 	while (heap.size > 0)
 	{
 		peek = heap_pop(&heap);
-		printf("Coder %d | arrival: %ld | deadline: %ld\n",
-			peek->s_coder->id, peek->arrival_time, peek->deadline);
+		printf("Coder %d | arrival: %ld | deadline: %ld\n", peek->s_coder->id,
+			peek->arrival_time, peek->deadline);
 	}
 
 	destroy_heap(&heap);
