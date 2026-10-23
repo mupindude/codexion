@@ -24,6 +24,7 @@ SRCS		=	src/main.c \
 				src/phase.c \
 				src/compile.c \
 				src/scheduler.c \
+				src/dongle_utils.c \
 				src/requests.c \
 				src/monitor.c \
 				src/time_utils.c
