@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 07:30:47 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/10/22 07:18:26 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/25 12:26:39 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ static int	run_scheduler_test(t_scheduler scheduler)
 	t_data		data;
 	pthread_t	scheduler_thread;
 	int			result;
-	int			i;
+	//int			i;
 
 	args.nb_coders = 4;
 	args.time_to_burnout = 1000;
@@ -74,8 +74,8 @@ static int	run_scheduler_test(t_scheduler scheduler)
 	if (scheduler == EDF)
 	{
 		if (submit_request(&data, &data.coders[0], 10) != 0
-			|| submit_request(&data, &data.coders[1], 20) != 0
-			|| submit_request(&data, &data.coders[2], 30) != 0)
+        || submit_request(&data, &data.coders[1], 20) != 0
+        || submit_request(&data, &data.coders[2], 30) != 0)
 		{
 			pthread_mutex_lock(&data.scheduler_mutex);
 			data.stop = 1;
@@ -87,9 +87,9 @@ static int	run_scheduler_test(t_scheduler scheduler)
 	}
 	else
 	{
-		if (submit_request(&data, &data.coders[0], 30) != 0
-			|| submit_request(&data, &data.coders[1], 10) != 0
-			|| submit_request(&data, &data.coders[2], 20) != 0)
+		if (submit_request(&data, &data.coders[0], 10) != 0
+        || submit_request(&data, &data.coders[1], 20) != 0
+        || submit_request(&data, &data.coders[2], 30) != 0)
 		{
 			pthread_mutex_lock(&data.scheduler_mutex);
 			data.stop = 1;
@@ -109,9 +109,9 @@ static int	run_scheduler_test(t_scheduler scheduler)
 		return (1);
 	}
 	if (scheduler == EDF)
-		result = wait_for_grant(&data, 2);
+    	result = wait_for_grant(&data, 2);
 	else
-		result = wait_for_grant(&data, 2);
+		result = wait_for_grant(&data, 1);
 	pthread_mutex_lock(&data.scheduler_mutex);
 	data.stop = 1;
 	pthread_cond_broadcast(&data.scheduler_cond);

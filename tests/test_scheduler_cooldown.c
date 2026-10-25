@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 07:41:41 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/10/22 07:18:19 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/25 12:01:38 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,8 @@
 
 int	main(void)
 {
-	t_data data;
-	t_coder coder1;
 	t_coder coder2;
 	t_dongle dongles[2];
-	t_request request1;
 	t_request request2;
 	long now;
 
@@ -28,15 +25,18 @@ int	main(void)
 	dongles[0].in_use = 0;
 	dongles[1].in_use = 0;
 
-	coder1.id = 1;
-	coder1.left_dongle = &dongles[0];
-	coder1.right_dongle = &dongles[1];
+	if (pthread_mutex_init(&dongles[0].mutex, NULL) != 0)
+    return (1);
+	if (pthread_mutex_init(&dongles[1].mutex, NULL) != 0)
+	{
+		pthread_mutex_destroy(&dongles[0].mutex);
+		return (1);
+	}
 
 	coder2.id = 2;
 	coder2.left_dongle = &dongles[0];
 	coder2.right_dongle = &dongles[1];
 
-	request1.s_coder = &coder1;
 	request2.s_coder = &coder2;
 
 	now = get_time_ms();
@@ -52,7 +52,10 @@ int	main(void)
 
 	printf("\nCoder 2 tries immediately:\n");
 	if (try_reserve_dongles(&request2, get_time_ms()))
-		printf("ERROR: Coder 2 got the dongles during cooldown\n");
+	{
+		printf("FAIL: Coder 2 got the dongles during cooldown\n");
+		return (1);
+	}
 	else
 		printf("Correct: Coder 2 must wait\n");
 
@@ -62,7 +65,10 @@ int	main(void)
 	if (try_reserve_dongles(&request2, get_time_ms()))
 		printf("Correct: Coder 2 got the dongles\n");
 	else
+	{
 		printf("ERROR: Coder 2 was still blocked\n");
+		return (1);
+	}
 
 	return (0);
 }

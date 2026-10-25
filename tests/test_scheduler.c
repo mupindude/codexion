@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/16 13:35:41 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/10/22 07:18:31 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/25 10:55:49 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,22 @@ int	main(void)
 	{
 		coders[i].id = i + 1;
 		coders[i].data = &data;
+		coders[i].last_compile = 0;
 		i++;
+	}
+
+		if (pthread_mutex_init(&data.scheduler_mutex, NULL) != 0)
+	{
+		destroy_heap(data.waiters);
+		free(data.waiters);
+		return (1);
+	}
+	if (pthread_cond_init(&data.scheduler_cond, NULL) != 0)
+	{
+		pthread_mutex_destroy(&data.scheduler_mutex);
+		destroy_heap(data.waiters);
+		free(data.waiters);
+		return (1);
 	}
 
 	submit_request(&data, &coders[0], 40);
@@ -56,6 +71,8 @@ int	main(void)
 		print_request(heap_pop(data.waiters));
 	}
 
+	pthread_cond_destroy(&data.scheduler_cond);
+	pthread_mutex_destroy(&data.scheduler_mutex);
 	destroy_heap(data.waiters);
 	free(data.waiters);
 	return (0);

@@ -41,7 +41,7 @@ int	main(void)
 	// req4.arrival_time = 40;
 	// req4.deadline = 100;
 
-	if (heap_init(&heap, 3, compare_edf))
+	if (heap_init(&heap, 3, compare_fifo))
 		return (1);
 
 	if (heap_push(&heap, &req3) || heap_push(&heap, &req1) || heap_push(&heap,

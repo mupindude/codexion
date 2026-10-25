@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 15:14:25 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/10/21 14:01:25 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/25 12:43:23 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,18 +18,16 @@ int	init_data(t_data *data, t_args *args)
 	data->stop = 0;
 	data->start_time = get_time_ms();
 	data->waiters = NULL;
+	data->coders = NULL;
+	data->dongles = NULL;
 	if (init_arrays(data))
 		return (1);
-	if (init_global_sync(data))
-	{
-		free(data->coders);
-		free(data->dongles);
-		return (1);
-	}
 	if (init_resources(data))
 	{
 		free(data->coders);
 		free(data->dongles);
+		data->coders = NULL;
+		data->dongles = NULL;
 		return (1);
 	}
 	if (init_coders(data))
