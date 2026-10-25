@@ -9,7 +9,7 @@ SRCS		=	src/main.c \
 				src/start_coders.c \
 				src/start_simulation.c \
 				src/finish_simulation.c \
-				join_threads.c \
+				src/join_threads.c \
 				src/init_data.c \
 				src/init_waiters.c \
 				src/init_sync.c \
