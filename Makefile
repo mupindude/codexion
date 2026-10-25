@@ -7,19 +7,16 @@ SRCS		=	src/main.c \
 				src/validate_args.c \
 				src/check_number.c \
 				src/start_coders.c \
-				src/start_simulation.c \
-				src/finish_simulation.c \
+				src/simulation.c \
 				src/join_threads.c \
 				src/init_data.c \
 				src/init_dongles.c \
 				src/init_resources.c \
 				src/heap.c \
 				src/heap_compare.c \
-				src/heap_reorder.c \
 				src/heap_remove.c \
 				src/coder.c \
 				src/phase.c \
-				src/compile.c \
 				src/scheduler.c \
 				src/dongle_utils.c \
 				src/requests.c \

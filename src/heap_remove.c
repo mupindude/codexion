@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/21 07:55:42 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/10/21 08:25:40 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/25 16:52:32 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,30 @@ static void	heap_sift_up(t_heap *heap, int index)
 			break ;
 		heap_swap(&heap->entries[index], &heap->entries[parent]);
 		index = parent;
+	}
+}
+
+void	heap_sift_down(t_heap *heap, int index)
+{
+	int	left;
+	int	right;
+	int	smallest;
+
+	while (1)
+	{
+		left = index * 2 + 1;
+		right = index * 2 + 2;
+		smallest = index;
+		if (left < heap->size && heap->compare(heap->entries[left],
+				heap->entries[smallest]) < 0)
+			smallest = left;
+		if (right < heap->size && heap->compare(heap->entries[right],
+				heap->entries[smallest]) < 0)
+			smallest = right;
+		if (smallest == index)
+			break ;
+		heap_swap(&heap->entries[index], &heap->entries[smallest]);
+		index = smallest;
 	}
 }
 
