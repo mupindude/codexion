@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/22 07:39:14 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/10/22 07:53:37 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/26 07:44:54 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,9 @@ static int	set_positive_arg(char *value, int *target, char *message)
 static int	validate_numeric_args(char **argv, t_args *argz)
 {
 	argz->nb_coders = atoi(argv[1]);
-	if (argz->nb_coders < 2)
+	if (argz->nb_coders < 1)
 	{
-		fprintf(stderr, "Error: At least 2 coders are required.\n");
+		fprintf(stderr, "Error: At least 1 is coder required.\n");
 		return (1);
 	}
 	if (set_positive_arg(argv[2], &argz->time_to_burnout,

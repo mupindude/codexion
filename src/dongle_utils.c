@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/23 07:46:28 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/10/23 07:53:03 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/26 07:38:41 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ static int	check_and_reserve(t_dongle *left, t_dongle *right, long now,
 	t_dongle	*second;
 	int			available;
 
+	if (left == right)
+		return (0);
 	first = left;
 	second = right;
 	if (first->id > second->id)
@@ -31,8 +33,7 @@ static int	check_and_reserve(t_dongle *left, t_dongle *right, long now,
 		second = left;
 	}
 	pthread_mutex_lock(&first->mutex);
-	if (first != second)
-		pthread_mutex_lock(&second->mutex);
+	pthread_mutex_lock(&second->mutex);
 	available = (left->in_use == 0 && left->available_at <= now
 			&& right->in_use == 0 && right->available_at <= now);
 	if (available && reserve)
@@ -40,8 +41,7 @@ static int	check_and_reserve(t_dongle *left, t_dongle *right, long now,
 		left->in_use = 1;
 		right->in_use = 1;
 	}
-	if (first != second)
-		pthread_mutex_unlock(&second->mutex);
+	pthread_mutex_unlock(&second->mutex);
 	pthread_mutex_unlock(&first->mutex);
 	return (available);
 }

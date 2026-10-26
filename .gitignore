@@ -1,0 +1,9 @@
+# Compiled executable
+codexion
+
+# Object files
+obj/
+obj_test/
+
+# Object files (*.o)
+*.o
