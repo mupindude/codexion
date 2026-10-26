@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/27 12:16:45 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/10/22 07:24:45 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/26 08:23:17 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,6 @@ static int	check_coder_burnout(t_data *data, int i)
 	pthread_mutex_lock(&data->print_mutex);
 	printf("%ld Coder [%d] burned out\n", now - data->start_time,
 		coder_id);
-	printf("Deadline: %ld | Detected: %ld | Delay: %ld ms\n",
-		deadline - data->start_time, now - data->start_time,
-		now - deadline);
 	pthread_mutex_unlock(&data->print_mutex);
 	return (1);
 }

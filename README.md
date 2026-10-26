@@ -184,4 +184,4 @@ AI tools were used as supplementary learning and development aids during this pr
 
 AI assistance was also used to suggest test scenarios and review edge cases involving scheduler selection, dongle cooldown, burnout detection, thread shutdown, and memory cleanup. The implementation was tested and refined through compilation, execution, and debugging.
 
-AI-generated explanations and suggestions were treated as material to evaluate and verify rather than as a substitute for understanding the code. The final disclosure should reflect the actual assistance used throughout the project.
+AI-generated explanations and suggestions were treated as material to evaluate and verify rather than as a substitute for understanding the code.

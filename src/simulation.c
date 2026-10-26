@@ -6,7 +6,7 @@
 /*   By: dmupindu <dmupindu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/25 17:00:43 by dmupindu          #+#    #+#             */
-/*   Updated: 2026/10/25 17:01:18 by dmupindu         ###   ########.fr       */
+/*   Updated: 2026/10/26 08:21:34 by dmupindu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,17 +34,24 @@ int	start_simulation(t_data *data)
 	return (0);
 }
 
-void	finish_simulation(t_data *data)
+static int	all_coders_completed(t_data *data)
 {
 	int	i;
 
 	i = 0;
 	while (i < data->args.nb_coders)
 	{
-		printf("Coder %d compiled %d times\n",
-			data->coders[i].id,
-			data->coders[i].compile_count);
+		if (data->coders[i].compile_count < data->args.nb_compiles)
+			return (0);
 		i++;
 	}
+	return (1);
+}
+
+void	finish_simulation(t_data *data)
+{
+	if (all_coders_completed(data))
+		printf("=== Simulation over. All coders completed %d compiles ===\n",
+			data->args.nb_compiles);
 	destroy_data(data);
 }
