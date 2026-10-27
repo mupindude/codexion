@@ -51,7 +51,7 @@ Arguments:
 
 | Argument | Description |
 |---|---|
-| `number_of_coders` | Number of coders in the simulation; at least 2 |
+| `number_of_coders` | Number of coders in the simulation; at least 1 |
 | `time_to_burnout` | Maximum time a coder can go without compiling before burnout |
 | `time_to_compile` | Duration of a compilation |
 | `time_to_debug` | Duration of debugging |
